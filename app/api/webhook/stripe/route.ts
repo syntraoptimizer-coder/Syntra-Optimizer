@@ -47,12 +47,12 @@ export async function POST(req: Request) {
 
           const { error } = await supabase
             .from('user_roles')
-            .update({
+            .upsert({
+              user_id: userId,
               role,
               stripe_customer_id: customerId,
               updated_at: new Date().toISOString(),
-            })
-            .eq('user_id', userId)
+            }, { onConflict: 'user_id' })
 
           if (error) {
             console.error('Supabase update error:', error)
