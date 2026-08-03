@@ -13,7 +13,7 @@ import { DevBanner } from '@/components/site/dev-banner'
 
 export default function HomePage() {
   return (
-    <div className="min-h-dvh">
+    <div className="min-h-dvh pt-10">
       <DevBanner />
       <Navbar />
       <main>

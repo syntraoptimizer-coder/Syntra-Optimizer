@@ -10,10 +10,12 @@ export function DevBanner() {
 
   return (
     <div
-      className="relative z-50 flex items-center justify-center gap-3 px-4 py-2.5 text-center text-sm"
+      className="fixed top-0 left-0 right-0 z-[100] flex items-center justify-center gap-3 px-4 py-2.5 text-center text-sm"
       style={{
-        background: 'rgba(255,200,50,0.08)',
-        borderBottom: '1px solid rgba(255,200,50,0.2)',
+        background: 'rgba(10,10,10,0.85)',
+        borderBottom: '1px solid rgba(255,200,50,0.25)',
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
       }}
     >
       <AlertTriangle
@@ -21,14 +23,14 @@ export function DevBanner() {
         style={{ color: 'rgba(255,200,50,0.85)' }}
       />
       <p style={{ color: 'rgba(255,200,50,0.85)', fontWeight: 300 }}>
-        <span className="font-medium">Site en cours de développement</span>
-        {' '}— Merci de ne pas effectuer d'achat pour le moment.
+        <span className="font-medium">Site under development</span>
+        {' '}— Please do not make any purchases at this time.
       </p>
       <button
         onClick={() => setVisible(false)}
         className="absolute right-3 grid size-6 place-items-center rounded-full transition-all duration-150 hover:bg-white/10"
         style={{ color: 'rgba(255,200,50,0.6)' }}
-        aria-label="Fermer"
+        aria-label="Close"
       >
         <X className="size-3.5" />
       </button>
