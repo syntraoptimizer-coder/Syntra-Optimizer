@@ -1,9 +1,8 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-import { Check, Crown, Wrench } from 'lucide-react'
+import { Check, Crown, Wrench, Loader2 } from 'lucide-react'
 
 const PLANS = {
   premium: {
@@ -11,7 +10,6 @@ const PLANS = {
     price: '$15',
     tagline: 'One-time payment',
     description: 'Full app license. Run every optimization yourself, whenever you want.',
-    url: 'https://buy.stripe.com/fZuaEX5q2gV80b29Ny6AM00',
     icon: Crown,
     perks: [
       'Full Syntra Optimizer license',
@@ -22,11 +20,10 @@ const PLANS = {
     ],
   },
   service: {
-    name: 'Syntra Optimizer Services',
+    name: 'Syntra Optimizer Service',
     price: '$6',
     tagline: 'Per session',
     description: 'A Syntra expert optimizes your PC remotely. Nothing to install on your end.',
-    url: 'https://buy.stripe.com/dRm14n05I48m2jagbW6AM01',
     icon: Wrench,
     perks: [
       'Personal remote optimization',
@@ -45,73 +42,136 @@ interface CheckoutFormProps {
 
 export function CheckoutForm({ user, plan }: CheckoutFormProps) {
   const router = useRouter()
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
   const selectedPlan = PLANS[plan as keyof typeof PLANS] || PLANS.premium
   const Icon = selectedPlan.icon
 
-  const handleCheckout = () => {
-    // Store plan info for webhook processing
-    localStorage.setItem('checkout_plan', plan)
-    localStorage.setItem('checkout_user_id', user.id)
-    
-    // Add success URL parameter to Stripe checkout
-    const successUrl = `${window.location.origin}/checkout/return?plan=${plan}`
-    const checkoutUrl = `${selectedPlan.url}?success_url=${encodeURIComponent(successUrl)}`
-    
-    // Redirect to Stripe
-    window.location.href = checkoutUrl
+  const handleCheckout = async () => {
+    setLoading(true)
+    setError(null)
+
+    try {
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok || !data.url) {
+        throw new Error(data.error || 'Failed to create checkout session')
+      }
+
+      window.location.href = data.url
+    } catch (err: any) {
+      setError(err.message || 'Something went wrong. Please try again.')
+      setLoading(false)
+    }
   }
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6">
-      <div className="text-center">
-        <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Complete Your Purchase</h1>
-        <p className="mt-4 text-muted-foreground">
-          You are signed in as <span className="font-medium text-foreground">{user.email}</span>
-        </p>
-      </div>
-
-      <div className="mt-12 rounded-2xl border border-border bg-card p-8">
-        <div className="flex items-center gap-4">
-          <div className="flex size-12 items-center justify-center rounded-full bg-primary/10">
-            <Icon className="size-6 text-primary" />
-          </div>
-          <div>
-            <h2 className="text-xl font-semibold">{selectedPlan.name}</h2>
-            <p className="text-sm text-muted-foreground">{selectedPlan.tagline}</p>
-          </div>
-          <div className="ml-auto text-right">
-            <p className="text-2xl font-bold">{selectedPlan.price}</p>
-          </div>
+    <div className="flex min-h-dvh flex-col items-center justify-center px-4 py-16">
+      <div className="w-full max-w-md">
+        <div className="text-center">
+          <h1
+            className="text-2xl font-light tracking-tight"
+            style={{ color: '#ffffff' }}
+          >
+            Complete Your Purchase
+          </h1>
+          <p className="mt-2 text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>
+            Signed in as <span style={{ color: 'rgba(255,255,255,0.7)' }}>{user.email}</span>
+          </p>
         </div>
 
-        <p className="mt-4 text-sm text-muted-foreground">{selectedPlan.description}</p>
-
-        <ul className="mt-6 space-y-3">
-          {selectedPlan.perks.map((perk) => (
-            <li key={perk} className="flex items-start gap-3 text-sm">
-              <Check className="mt-0.5 size-4 shrink-0 text-primary" />
-              <span>{perk}</span>
-            </li>
-          ))}
-        </ul>
-
-        <Button
-          onClick={handleCheckout}
-          size="lg"
-          className="mt-8 w-full h-12 text-base"
+        {/* Plan card */}
+        <div
+          className="mt-8 rounded-2xl p-6"
+          style={{
+            background: 'rgba(255,255,255,0.04)',
+            border: '1px solid rgba(255,255,255,0.1)',
+          }}
         >
-          Proceed to Payment
-        </Button>
+          <div className="flex items-center gap-4">
+            <div
+              className="grid size-11 place-items-center rounded-xl"
+              style={{
+                background: 'rgba(255,255,255,0.08)',
+                border: '1px solid rgba(255,255,255,0.1)',
+              }}
+            >
+              <Icon className="size-5" style={{ color: 'rgba(255,255,255,0.8)' }} />
+            </div>
+            <div className="flex-1">
+              <h2 className="text-base font-medium" style={{ color: 'rgba(255,255,255,0.9)' }}>
+                {selectedPlan.name}
+              </h2>
+              <p className="text-xs" style={{ color: 'rgba(255,255,255,0.38)' }}>
+                {selectedPlan.tagline}
+              </p>
+            </div>
+            <span
+              className="font-mono text-2xl font-light"
+              style={{ color: '#ffffff' }}
+            >
+              {selectedPlan.price}
+            </span>
+          </div>
 
-        <p className="mt-4 text-center text-xs text-muted-foreground">
-          You will be redirected to Stripe to complete your payment securely.
-        </p>
-      </div>
+          <p className="mt-4 text-sm" style={{ color: 'rgba(255,255,255,0.42)', fontWeight: 300 }}>
+            {selectedPlan.description}
+          </p>
 
-      <div className="mt-6 text-center">
+          <ul className="mt-5 space-y-2.5">
+            {selectedPlan.perks.map((perk) => (
+              <li key={perk} className="flex items-start gap-2.5 text-sm">
+                <Check className="mt-0.5 size-4 shrink-0" style={{ color: 'rgba(255,255,255,0.5)' }} />
+                <span style={{ color: 'rgba(255,255,255,0.6)', fontWeight: 300 }}>{perk}</span>
+              </li>
+            ))}
+          </ul>
+
+          {error && (
+            <p
+              className="mt-4 rounded-xl px-4 py-3 text-sm"
+              style={{ background: 'rgba(255,80,80,0.1)', color: 'rgba(255,120,120,0.9)' }}
+            >
+              {error}
+            </p>
+          )}
+
+          <button
+            onClick={handleCheckout}
+            disabled={loading}
+            className="mt-6 inline-flex h-11 w-full items-center justify-center gap-2 rounded-full text-sm font-semibold transition-all duration-200 hover:-translate-y-px disabled:opacity-60 disabled:cursor-not-allowed"
+            style={{
+              background: 'rgba(255,255,255,0.92)',
+              color: '#080808',
+              boxShadow: '0 0 28px -8px rgba(255,255,255,0.45)',
+            }}
+          >
+            {loading ? (
+              <>
+                <Loader2 className="size-4 animate-spin" />
+                Redirecting…
+              </>
+            ) : (
+              'Proceed to Payment'
+            )}
+          </button>
+
+          <p className="mt-3 text-center text-xs" style={{ color: 'rgba(255,255,255,0.28)' }}>
+            You will be redirected to Stripe to complete your payment securely.
+          </p>
+        </div>
+
         <button
           onClick={() => router.back()}
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+          className="mt-5 w-full text-center text-sm transition-colors duration-200 hover:text-white"
+          style={{ color: 'rgba(255,255,255,0.35)' }}
         >
           ← Back
         </button>

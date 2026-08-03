@@ -1,22 +1,11 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
 import { CheckCircle2, Crown, Wrench } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 
 const PLANS = {
-  premium: {
-    name: 'Premium',
-    icon: Crown,
-    badge: 'Premium',
-  },
-  service: {
-    name: 'Service',
-    icon: Wrench,
-    badge: 'Service',
-  },
+  premium: { name: 'Premium', icon: Crown },
+  service: { name: 'Service', icon: Wrench },
 }
 
 interface SuccessContentProps {
@@ -26,94 +15,61 @@ interface SuccessContentProps {
 
 export function SuccessContent({ user, plan }: SuccessContentProps) {
   const router = useRouter()
-  const [isUpdating, setIsUpdating] = useState(true)
-  const [roleUpdated, setRoleUpdated] = useState(false)
-  const supabase = createClient()
-
   const selectedPlan = PLANS[plan as keyof typeof PLANS] || PLANS.premium
   const Icon = selectedPlan.icon
 
-  useEffect(() => {
-    const updateRole = async () => {
-      try {
-        // Update user role in database
-        const { error } = await supabase
-          .from('user_roles')
-          .update({ 
-            role: plan === 'service' ? 'service' : 'premium',
-            updated_at: new Date().toISOString()
-          })
-          .eq('user_id', user.id)
-
-        if (!error) {
-          setRoleUpdated(true)
-        }
-      } catch (error) {
-        console.error('Error updating role:', error)
-      } finally {
-        setIsUpdating(false)
-      }
-    }
-
-    updateRole()
-  }, [user.id, plan, supabase])
-
-  const handleGoToDashboard = () => {
-    router.push('/dashboard')
-  }
-
   return (
-    <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6">
-      <div className="text-center">
-        <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-primary/10">
-          <CheckCircle2 className="size-8 text-primary" />
+    <div className="flex min-h-dvh flex-col items-center justify-center px-4">
+      <div
+        className="w-full max-w-md rounded-3xl p-8 text-center"
+        style={{
+          background: 'rgba(255,255,255,0.04)',
+          border: '1px solid rgba(255,255,255,0.1)',
+        }}
+      >
+        <div
+          className="mx-auto grid size-16 place-items-center rounded-full"
+          style={{
+            background: 'rgba(255,255,255,0.08)',
+            boxShadow: '0 0 40px -10px rgba(255,255,255,0.3)',
+          }}
+        >
+          <CheckCircle2 className="size-8" style={{ color: '#ffffff' }} />
         </div>
-        <h1 className="mt-6 text-3xl font-bold tracking-tight sm:text-4xl">Payment Successful!</h1>
-        <p className="mt-4 text-muted-foreground">
-          Thank you for your purchase, {user.email}
+
+        <h1
+          className="mt-6 text-2xl font-light tracking-tight"
+          style={{ color: '#ffffff' }}
+        >
+          Payment Successful!
+        </h1>
+        <p className="mt-2 text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>
+          Thank you, {user.email}
         </p>
-      </div>
 
-      <div className="mt-12 rounded-2xl border border-border bg-card p-8">
-        <div className="flex items-center gap-4">
-          <div className="flex size-12 items-center justify-center rounded-full bg-primary/10">
-            <Icon className="size-6 text-primary" />
-          </div>
-          <div>
-            <h2 className="text-xl font-semibold">You now have {selectedPlan.name} access</h2>
-            <div className="mt-1 inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
-              <Icon className="size-3" />
-              {selectedPlan.badge}
-            </div>
-          </div>
+        <div
+          className="mx-auto mt-6 inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium"
+          style={{
+            background: 'rgba(255,255,255,0.08)',
+            border: '1px solid rgba(255,255,255,0.14)',
+            color: 'rgba(255,255,255,0.85)',
+          }}
+        >
+          <Icon className="size-4" />
+          {selectedPlan.name} access activated
         </div>
 
-        {isUpdating ? (
-          <div className="mt-6 text-center text-sm text-muted-foreground">
-            Setting up your account...
-          </div>
-        ) : roleUpdated ? (
-          <div className="mt-6 rounded-lg bg-primary/10 p-4 text-center">
-            <p className="text-sm font-medium text-primary">
-              ✓ Your account has been upgraded successfully
-            </p>
-          </div>
-        ) : (
-          <div className="mt-6 rounded-lg bg-destructive/10 p-4 text-center">
-            <p className="text-sm text-destructive">
-              There was an issue updating your account. Please contact support.
-            </p>
-          </div>
-        )}
-
-        <Button
-          onClick={handleGoToDashboard}
-          size="lg"
-          className="mt-8 w-full h-12 text-base"
-          disabled={isUpdating}
+        <button
+          onClick={() => router.push('/dashboard')}
+          className="mt-8 inline-flex h-11 w-full items-center justify-center rounded-full text-sm font-semibold transition-all duration-200 hover:-translate-y-px"
+          style={{
+            background: 'rgba(255,255,255,0.92)',
+            color: '#080808',
+            boxShadow: '0 0 28px -8px rgba(255,255,255,0.45)',
+          }}
         >
           Go to Dashboard
-        </Button>
+        </button>
       </div>
     </div>
   )

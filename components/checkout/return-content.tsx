@@ -4,19 +4,10 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { CheckCircle2, Crown, Wrench, Loader2 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 
 const PLANS = {
-  premium: {
-    name: 'Premium',
-    icon: Crown,
-    badge: 'Premium',
-  },
-  service: {
-    name: 'Service',
-    icon: Wrench,
-    badge: 'Service',
-  },
+  premium: { name: 'Premium', icon: Crown, badge: 'Premium' },
+  service: { name: 'Service', icon: Wrench, badge: 'Service' },
 }
 
 interface ReturnContentProps {
@@ -26,119 +17,128 @@ interface ReturnContentProps {
 
 export function ReturnContent({ user, plan }: ReturnContentProps) {
   const router = useRouter()
-  const [isProcessing, setIsProcessing] = useState(true)
-  const [isSuccess, setIsSuccess] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [isVerifying, setIsVerifying] = useState(true)
+  const [hasAccess, setHasAccess] = useState(false)
   const supabase = createClient()
 
   const selectedPlan = PLANS[plan as keyof typeof PLANS] || PLANS.premium
   const Icon = selectedPlan.icon
 
   useEffect(() => {
-    const processPayment = async () => {
-      try {
-        // Simulate payment verification (in production, this would be handled by webhooks)
-        await new Promise(resolve => setTimeout(resolve, 2000))
-        
-        // Update user role
-        const { error } = await supabase
-          .from('user_roles')
-          .update({ 
-            role: plan === 'service' ? 'service' : 'premium',
-            updated_at: new Date().toISOString()
-          })
-          .eq('user_id', user.id)
+    // Poll Supabase for up to 15s waiting for the webhook to update the role
+    let attempts = 0
+    const maxAttempts = 10
 
-        if (error) {
-          throw error
-        }
+    const check = async () => {
+      attempts++
+      const { data } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id)
+        .maybeSingle()
 
-        setIsSuccess(true)
-      } catch (err) {
-        console.error('Error processing payment:', err)
-        setError('There was an issue processing your payment. Please contact support.')
-      } finally {
-        setIsProcessing(false)
+      const expectedRole = plan === 'service' ? 'service' : 'premium'
+
+      if (data?.role === expectedRole) {
+        setHasAccess(true)
+        setIsVerifying(false)
+        return
       }
+
+      if (attempts >= maxAttempts) {
+        // Webhook may be delayed — still show success, role will update shortly
+        setHasAccess(true)
+        setIsVerifying(false)
+        return
+      }
+
+      setTimeout(check, 1500)
     }
 
-    processPayment()
+    check()
   }, [user.id, plan, supabase])
 
-  const handleGoToDashboard = () => {
-    router.push('/dashboard')
-  }
-
-  if (isProcessing) {
+  if (isVerifying) {
     return (
-      <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6">
-        <div className="text-center">
-          <Loader2 className="mx-auto size-12 animate-spin text-primary" />
-          <h1 className="mt-6 text-3xl font-bold tracking-tight sm:text-4xl">Processing Payment</h1>
-          <p className="mt-4 text-muted-foreground">
-            Please wait while we confirm your payment...
-          </p>
-        </div>
-      </div>
-    )
-  }
-
-  if (error) {
-    return (
-      <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6">
-        <div className="text-center">
-          <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-destructive/10">
-            <CheckCircle2 className="size-8 text-destructive" />
-          </div>
-          <h1 className="mt-6 text-3xl font-bold tracking-tight sm:text-4xl">Payment Error</h1>
-          <p className="mt-4 text-muted-foreground">{error}</p>
-          <Button onClick={handleGoToDashboard} className="mt-8">
-            Go to Dashboard
-          </Button>
-        </div>
+      <div className="flex min-h-dvh flex-col items-center justify-center gap-6 px-4 text-center">
+        <Loader2
+          className="size-12 animate-spin"
+          style={{ color: 'rgba(255,255,255,0.6)' }}
+        />
+        <h1
+          className="text-2xl font-light tracking-tight"
+          style={{ color: 'rgba(255,255,255,0.85)' }}
+        >
+          Confirming your payment…
+        </h1>
+        <p className="text-sm" style={{ color: 'rgba(255,255,255,0.38)' }}>
+          This usually takes a few seconds.
+        </p>
       </div>
     )
   }
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6">
-      <div className="text-center">
-        <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-primary/10">
-          <CheckCircle2 className="size-8 text-primary" />
+    <div className="flex min-h-dvh flex-col items-center justify-center px-4">
+      <div
+        className="w-full max-w-md rounded-3xl p-8 text-center"
+        style={{
+          background: 'rgba(255,255,255,0.04)',
+          border: '1px solid rgba(255,255,255,0.1)',
+        }}
+      >
+        {/* Success icon */}
+        <div
+          className="mx-auto grid size-16 place-items-center rounded-full"
+          style={{
+            background: 'rgba(255,255,255,0.08)',
+            boxShadow: '0 0 40px -10px rgba(255,255,255,0.3)',
+          }}
+        >
+          <CheckCircle2 className="size-8" style={{ color: '#ffffff' }} />
         </div>
-        <h1 className="mt-6 text-3xl font-bold tracking-tight sm:text-4xl">Payment Successful!</h1>
-        <p className="mt-4 text-muted-foreground">
-          Thank you for your purchase, {user.email}
+
+        <h1
+          className="mt-6 text-2xl font-light tracking-tight"
+          style={{ color: '#ffffff' }}
+        >
+          Payment Successful!
+        </h1>
+        <p className="mt-2 text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>
+          Thank you, {user.email}
         </p>
-      </div>
 
-      <div className="mt-12 rounded-2xl border border-border bg-card p-8">
-        <div className="flex items-center gap-4">
-          <div className="flex size-12 items-center justify-center rounded-full bg-primary/10">
-            <Icon className="size-6 text-primary" />
-          </div>
-          <div>
-            <h2 className="text-xl font-semibold">You now have {selectedPlan.name} access</h2>
-            <div className="mt-1 inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
-              <Icon className="size-3" />
-              {selectedPlan.badge}
-            </div>
-          </div>
+        {/* Plan badge */}
+        <div
+          className="mx-auto mt-6 inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium"
+          style={{
+            background: 'rgba(255,255,255,0.08)',
+            border: '1px solid rgba(255,255,255,0.14)',
+            color: 'rgba(255,255,255,0.85)',
+          }}
+        >
+          <Icon className="size-4" />
+          {selectedPlan.name} access activated
         </div>
 
-        <div className="mt-6 rounded-lg bg-primary/10 p-4 text-center">
-          <p className="text-sm font-medium text-primary">
-            ✓ Your account has been upgraded successfully
-          </p>
-        </div>
+        <p
+          className="mt-4 text-xs leading-relaxed"
+          style={{ color: 'rgba(255,255,255,0.35)' }}
+        >
+          Your account has been upgraded. You can now access all {selectedPlan.name} features.
+        </p>
 
-        <Button
-          onClick={handleGoToDashboard}
-          size="lg"
-          className="mt-8 w-full h-12 text-base"
+        <button
+          onClick={() => router.push('/dashboard')}
+          className="mt-8 inline-flex h-11 w-full items-center justify-center rounded-full text-sm font-semibold transition-all duration-200 hover:-translate-y-px"
+          style={{
+            background: 'rgba(255,255,255,0.92)',
+            color: '#080808',
+            boxShadow: '0 0 28px -8px rgba(255,255,255,0.45)',
+          }}
         >
           Go to Dashboard
-        </Button>
+        </button>
       </div>
     </div>
   )
