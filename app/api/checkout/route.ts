@@ -42,6 +42,7 @@ export async function POST(req: Request) {
       user_id: user.id,
       plan,
     },
+    allow_promotion_codes: true,
     customer_email: user.email,
     success_url: `${origin}/checkout/return?plan=${plan}`,
     cancel_url: `${origin}/checkout?plan=${plan}`,
