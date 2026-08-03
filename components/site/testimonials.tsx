@@ -3,43 +3,43 @@ import { SectionHeading } from '@/components/site/section-heading'
 
 const TESTIMONIALS = [
   {
-    name: 'Marcus Reyes',
-    role: 'Competitive FPS player',
+    name: 'xX_Sn1perGod_Xx',
+    role: 'Valorant Radiant',
     quote:
       'Ping dropped and my 1% lows got way more stable. Valorant feels completely different now — worth it just for the network tuning.',
     rating: 5,
   },
   {
-    name: 'Priya Natarajan',
-    role: 'Streamer',
+    name: 'Fr0stByte',
+    role: 'Twitch Streamer',
     quote:
       'My laptop came loaded with junk. Syntra debloated it in one pass and boot times are almost half what they were.',
     rating: 5,
   },
   {
-    name: 'Dylan Brooks',
-    role: 'PC builder',
+    name: 'N1ghtCr4wler',
+    role: 'PC Enthusiast',
     quote:
       'I was skeptical, but the before/after score is real. The BIOS guidance alone saved me an afternoon of research.',
     rating: 4,
   },
   {
-    name: 'Sofia Almeida',
-    role: 'Casual gamer',
+    name: 'cl1ckr4te999',
+    role: 'CS2 Global Elite',
     quote:
       'I went with the Done-For-You plan and an expert handled everything remotely. Smooth, safe, and my games run great.',
     rating: 5,
   },
   {
-    name: 'Kenji Watanabe',
-    role: 'Software engineer',
+    name: 'V0idW4lker',
+    role: 'Warzone Top 250',
     quote:
-      'Cleared 12GB of cache and freed up trapped RAM. Everything from Chrome to my IDE just feels snappier.',
+      'Cleared 12GB of cache and freed up trapped RAM. Everything from Chrome to my game launcher just feels snappier.',
     rating: 5,
   },
   {
-    name: 'Hannah Cole',
-    role: 'Content creator',
+    name: 'Pix3lRush',
+    role: 'Content Creator',
     quote:
       'Render exports are faster and my system score jumped from the 60s into the 90s. Easiest optimization I have done.',
     rating: 5,
