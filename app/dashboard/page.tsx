@@ -127,19 +127,36 @@ export default async function DashboardPage() {
                 <Download className="size-5 text-primary" />
                 <h2 className="text-lg font-semibold tracking-tight">Download</h2>
               </div>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Get the latest Syntra Optimizer for Windows 10/11 and boost your PC in one click.
-              </p>
-              <a
-                href="/downloads/syntra-optimizer-setup.exe"
-                className="mt-4 inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-primary text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-              >
-                <Download className="size-4" />
-                Download v1.3.0
-              </a>
-              <p className="mt-2 text-center text-xs text-muted-foreground">
-                v1.3.0 — Windows 10/11 · 4.8 MB
-              </p>
+              {role === 'free' ? (
+                <div className="mt-4 text-center">
+                  <p className="text-sm text-muted-foreground">
+                    Upgrade to Premium to download Syntra Optimizer
+                  </p>
+                  <Link
+                    href="/checkout?plan=premium"
+                    className="mt-4 inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-primary text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+                  >
+                    <Crown className="size-4" />
+                    Upgrade to Premium
+                  </Link>
+                </div>
+              ) : (
+                <>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    Get the latest Syntra Optimizer for Windows 10/11 and boost your PC in one click.
+                  </p>
+                  <a
+                    href="/downloads/syntra-optimizer-setup.exe"
+                    className="mt-4 inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-primary text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+                  >
+                    <Download className="size-4" />
+                    Download v1.3.0
+                  </a>
+                  <p className="mt-2 text-center text-xs text-muted-foreground">
+                    v1.3.0 — Windows 10/11 · 4.8 MB
+                  </p>
+                </>
+              )}
             </section>
 
             <section className="rounded-xl border border-border bg-card/40 p-5">

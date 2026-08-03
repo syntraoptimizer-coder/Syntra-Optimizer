@@ -42,24 +42,24 @@
 
 :root {
   color-scheme: dark;
-  --background: oklch(0.14 0 0);
+  --background: oklch(0.08 0 0);
   --foreground: oklch(0.97 0 0);
-  --card: oklch(0.19 0 0);
+  --card: oklch(0.12 0 0);
   --card-foreground: oklch(0.97 0 0);
-  --popover: oklch(0.19 0 0);
+  --popover: oklch(0.12 0 0);
   --popover-foreground: oklch(0.97 0 0);
   --primary: oklch(0.97 0 0);
-  --primary-foreground: oklch(0.14 0 0);
-  --secondary: oklch(0.26 0 0);
+  --primary-foreground: oklch(0.08 0 0);
+  --secondary: oklch(0.18 0 0);
   --secondary-foreground: oklch(0.97 0 0);
-  --muted: oklch(0.23 0 0);
-  --muted-foreground: oklch(0.68 0 0);
-  --accent: oklch(0.3 0 0);
+  --muted: oklch(0.16 0 0);
+  --muted-foreground: oklch(0.58 0 0);
+  --accent: oklch(0.22 0 0);
   --accent-foreground: oklch(0.97 0 0);
   --destructive: oklch(0.62 0.2 25);
-  --border: oklch(1 0 0 / 12%);
-  --input: oklch(1 0 0 / 16%);
-  --ring: oklch(0.8 0 0);
+  --border: oklch(1 0 0 / 9%);
+  --input: oklch(1 0 0 / 12%);
+  --ring: oklch(0.7 0 0);
   --chart-1: oklch(0.97 0 0);
   --chart-2: oklch(0.75 0 0);
   --chart-3: oklch(0.55 0 0);
@@ -72,7 +72,214 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    scroll-behavior: smooth;
+  }
   body {
     @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
   }
+}
+
+/* ── Palace Hub visual primitives ─────────────────────────────── */
+
+/* Glow halos */
+.glow {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  filter: blur(56px);
+  transform: translate(-50%, -50%);
+}
+
+.glow-white {
+  background: radial-gradient(
+    closest-side,
+    rgba(255, 255, 255, 0.45) 0%,
+    rgba(255, 255, 255, 0.12) 44%,
+    transparent 74%
+  );
+}
+
+.glow-soft {
+  background: radial-gradient(
+    closest-side,
+    rgba(255, 255, 255, 0.22) 0%,
+    rgba(255, 255, 255, 0.06) 44%,
+    transparent 74%
+  );
+}
+
+/* Hero grid */
+.hero-grid {
+  position: absolute;
+  left: 50%;
+  top: 18%;
+  transform: translateX(-50%);
+  width: min(1100px, 96vw);
+  height: 65vh;
+  pointer-events: none;
+  opacity: 0.32;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.13) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.13) 1px, transparent 1px);
+  background-size: 6.5vmin 6.5vmin;
+  mask-image: radial-gradient(ellipse 58% 56% at 50% 38%, #000 22%, transparent 76%);
+  -webkit-mask-image: radial-gradient(ellipse 58% 56% at 50% 38%, #000 22%, transparent 76%);
+}
+
+/* Planet dome */
+.planet {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      closest-side at 50% 0%,
+      rgba(28, 28, 28, 0.4) 0%,
+      rgba(18, 18, 18, 0.65) 3%,
+      rgba(10, 10, 10, 0.9) 7%,
+      #0a0a0a 12%,
+      #080808 18%,
+      var(--background) 30%
+    );
+}
+
+.planet-rim {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  pointer-events: none;
+  box-shadow:
+    0 0 0 1.5px rgba(255, 255, 255, 0.45),
+    inset 0 6px 28px -2px rgba(255, 255, 255, 0.38),
+    inset 0 24px 80px -10px rgba(255, 255, 255, 0.16);
+  opacity: 0.28;
+}
+
+/* Speck particles */
+.speck {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.55);
+  pointer-events: none;
+}
+
+/* Glass card */
+.glass-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.glass-card-hover {
+  transition: border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+}
+
+.glass-card-hover:hover {
+  background: rgba(255, 255, 255, 0.055);
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 0 40px -16px rgba(255, 255, 255, 0.12);
+}
+
+/* Gradient text */
+.gradient-text {
+  color: transparent;
+  background-image: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    rgba(255, 255, 255, 0.72) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.gradient-text-top {
+  color: transparent;
+  background-image: radial-gradient(
+    110% 130% at 50% 80%,
+    #ffffff 0%,
+    rgba(255, 255, 255, 0.85) 30%,
+    rgba(200, 200, 200, 0.72) 70%,
+    rgba(150, 150, 150, 0.55) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+/* Num light — glow behind big stats */
+.num-light {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 700px;
+  height: 280px;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  filter: blur(55px);
+  opacity: 0.55;
+  background:
+    radial-gradient(35% 48% at 48% 54%, rgba(255, 255, 255, 0.88) 0%, rgba(255, 255, 255, 0.15) 32%, transparent 54%),
+    radial-gradient(65% 70% at 54% 46%, rgba(255, 255, 255, 0.22) 0%, transparent 58%);
+  mask-image: radial-gradient(ellipse 64% 62% at 50% 52%, #000 0%, rgba(0,0,0,0.5) 44%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse 64% 62% at 50% 52%, #000 0%, rgba(0,0,0,0.5) 44%, transparent 80%);
+}
+
+/* Eco tiles (section background grid) */
+.eco-tiles {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  width: 100vw;
+  height: 100%;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 6.5vmin 9vmin;
+  mask-image: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.3) 14%, #000 32%, #000 72%, transparent 97%);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.3) 14%, #000 32%, #000 72%, transparent 97%);
+}
+
+/* Animated border glow for featured cards */
+@keyframes border-spin {
+  from { --angle: 0deg; }
+  to { --angle: 360deg; }
+}
+
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.glow-border-featured {
+  border: 1.5px solid transparent;
+  background-clip: padding-box;
+  position: relative;
+}
+
+.glow-border-featured::before {
+  content: '';
+  position: absolute;
+  inset: -1.5px;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: conic-gradient(from var(--angle), transparent 60%, rgba(255,255,255,0.7) 80%, rgba(255,255,255,1) 90%, rgba(255,255,255,0.7) 100%, transparent 120%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  animation: border-spin 4s linear infinite;
+  pointer-events: none;
 }

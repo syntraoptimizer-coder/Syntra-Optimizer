@@ -23,13 +23,14 @@ function Gauge({
   const stroke = 14
   const radius = (size - stroke) / 2
   const circumference = 2 * Math.PI * radius
-  const color = variant === 'after' ? 'var(--primary)' : 'var(--muted-foreground)'
+
+  const isAfter = variant === 'after'
 
   useEffect(() => {
     if (!active) return
     let raf = 0
     const start = performance.now()
-    const duration = 1600
+    const duration = 1800
     const tick = (now: number) => {
       const progress = Math.min((now - start) / duration, 1)
       const eased = 1 - Math.pow(1 - progress, 3)
@@ -44,34 +45,59 @@ function Gauge({
 
   return (
     <div className="flex flex-col items-center">
-      <div className="relative" style={{ width: size, height: size }}>
+      <div
+        className="relative rounded-full p-2"
+        style={{
+          background: isAfter
+            ? 'radial-gradient(circle at 50% 60%, rgba(255,255,255,0.06) 0%, transparent 70%)'
+            : 'transparent',
+          boxShadow: isAfter ? '0 0 60px -20px rgba(255,255,255,0.25)' : 'none',
+        }}
+      >
         <svg width={size} height={size} className="-rotate-90">
+          {/* Track */}
           <circle
             cx={size / 2}
             cy={size / 2}
             r={radius}
             fill="none"
-            stroke="var(--muted)"
+            stroke="rgba(255,255,255,0.07)"
             strokeWidth={stroke}
           />
+          {/* Progress */}
           <circle
             cx={size / 2}
             cy={size / 2}
             r={radius}
             fill="none"
-            stroke={color}
+            stroke={isAfter ? 'rgba(255,255,255,0.92)' : 'rgba(255,255,255,0.3)'}
             strokeWidth={stroke}
             strokeLinecap="round"
             strokeDasharray={circumference}
             strokeDashoffset={offset}
+            style={{ filter: isAfter ? 'drop-shadow(0 0 8px rgba(255,255,255,0.55))' : 'none' }}
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="font-mono text-5xl font-semibold tabular-nums">{display}</span>
-          <span className="text-xs text-muted-foreground">/ 100</span>
+          <span
+            className="font-mono tabular-nums"
+            style={{
+              fontSize: '3rem',
+              fontWeight: 300,
+              color: isAfter ? '#ffffff' : 'rgba(255,255,255,0.45)',
+            }}
+          >
+            {display}
+          </span>
+          <span className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>/ 100</span>
         </div>
       </div>
-      <span className="mt-4 text-sm font-medium text-muted-foreground">{label}</span>
+      <span
+        className="mt-4 text-sm font-light"
+        style={{ color: isAfter ? 'rgba(255,255,255,0.75)' : 'rgba(255,255,255,0.35)' }}
+      >
+        {label}
+      </span>
     </div>
   )
 }
@@ -97,22 +123,46 @@ export function ScoreComparison() {
   }, [])
 
   return (
-    <section className="border-y border-border bg-card/40">
-      <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+    <section
+      className="relative overflow-hidden"
+      style={{ borderTop: '1px solid rgba(255,255,255,0.07)', borderBottom: '1px solid rgba(255,255,255,0.07)' }}
+    >
+      {/* Background glow */}
+      <div
+        aria-hidden="true"
+        className="glow glow-soft"
+        style={{ left: '50%', top: '50%', width: 600, height: 400, opacity: 0.2 }}
+      />
+
+      <div className="relative z-10 mx-auto max-w-6xl px-4 py-24 sm:px-6">
         <SectionHeading
           eyebrow="Measurable results"
           title="Watch your system score climb"
           description="Syntra grades your system health before and after optimization so you can see exactly what changed."
         />
+
         <div
           ref={ref}
-          className="mt-14 flex flex-col items-center justify-center gap-8 sm:flex-row sm:gap-12"
+          className="mt-16 flex flex-col items-center justify-center gap-10 sm:flex-row sm:gap-16"
         >
           <Gauge value={BEFORE} active={active} variant="before" label="Before" />
-          <ArrowRight className="size-8 rotate-90 text-primary sm:rotate-0" aria-hidden="true" />
+
+          <ArrowRight
+            className="size-8 rotate-90 sm:rotate-0"
+            style={{ color: 'rgba(255,255,255,0.25)' }}
+            aria-hidden="true"
+          />
+
           <Gauge value={AFTER} active={active} variant="after" label="After Syntra" />
         </div>
-        <div className="mx-auto mt-10 flex w-fit items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-medium text-primary">
+
+        <div className="mx-auto mt-10 flex w-fit items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium"
+          style={{
+            background: 'rgba(255,255,255,0.06)',
+            border: '1px solid rgba(255,255,255,0.12)',
+            color: 'rgba(255,255,255,0.7)',
+          }}
+        >
           <TrendingUp className="size-4" />
           +{AFTER - BEFORE} point improvement on average
         </div>

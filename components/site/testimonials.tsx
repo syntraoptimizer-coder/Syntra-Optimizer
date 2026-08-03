@@ -47,50 +47,78 @@ const TESTIMONIALS = [
 ]
 
 function initials(name: string) {
-  return name
-    .split(' ')
-    .map((n) => n[0])
-    .join('')
-    .slice(0, 2)
+  return name.split(' ').map((n) => n[0]).join('').slice(0, 2)
 }
 
 export function Testimonials() {
   return (
-    <section className="border-y border-border bg-card/40">
-      <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+    <section
+      className="relative overflow-hidden"
+      style={{ borderTop: '1px solid rgba(255,255,255,0.07)', borderBottom: '1px solid rgba(255,255,255,0.07)' }}
+    >
+      <div className="eco-tiles" aria-hidden="true" />
+
+      <div className="relative z-10 mx-auto max-w-6xl px-4 py-24 sm:px-6">
         <SectionHeading
           eyebrow="Loved by 100+ users"
           title="What players are saying"
           description="From ranked grinders to first-time PC owners, Syntra keeps machines fast."
         />
-        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {TESTIMONIALS.map((t) => (
-            <figure key={t.name} className="rounded-2xl border border-border bg-card p-6">
-              <div className="flex items-center gap-0.5" aria-label={`${t.rating} out of 5 stars`}>
+            <figure
+              key={t.name}
+              className="glass-card glass-card-hover rounded-2xl p-6"
+            >
+              {/* Stars */}
+              <div
+                className="flex items-center gap-0.5"
+                aria-label={`${t.rating} out of 5 stars`}
+              >
                 {Array.from({ length: 5 }).map((_, i) => (
                   <Star
                     key={i}
-                    className={
-                      i < t.rating
-                        ? 'size-4 fill-accent text-accent'
-                        : 'size-4 text-muted-foreground/40'
-                    }
+                    className="size-3.5"
+                    style={{
+                      fill: i < t.rating ? 'rgba(255,255,255,0.85)' : 'transparent',
+                      color: i < t.rating ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.15)',
+                    }}
                   />
                 ))}
               </div>
-              <blockquote className="mt-4 text-sm leading-relaxed text-foreground/90">
-                “{t.quote}”
+
+              <blockquote
+                className="mt-4 text-sm leading-relaxed"
+                style={{ color: 'rgba(255,255,255,0.65)', fontWeight: 300 }}
+              >
+                "{t.quote}"
               </blockquote>
+
               <figcaption className="mt-5 flex items-center gap-3">
                 <span
                   aria-hidden="true"
-                  className="grid size-10 place-items-center rounded-full bg-primary/15 text-sm font-semibold text-primary"
+                  className="grid size-9 place-items-center rounded-full text-xs font-semibold"
+                  style={{
+                    background: 'rgba(255,255,255,0.08)',
+                    border: '1px solid rgba(255,255,255,0.12)',
+                    color: 'rgba(255,255,255,0.7)',
+                  }}
                 >
                   {initials(t.name)}
                 </span>
                 <span className="text-sm">
-                  <span className="block font-medium">{t.name}</span>
-                  <span className="block text-muted-foreground">{t.role}</span>
+                  <span
+                    className="block font-medium"
+                    style={{ color: 'rgba(255,255,255,0.85)' }}
+                  >
+                    {t.name}
+                  </span>
+                  <span
+                    className="block text-xs font-light"
+                    style={{ color: 'rgba(255,255,255,0.38)' }}
+                  >
+                    {t.role}
+                  </span>
                 </span>
               </figcaption>
             </figure>

@@ -49,7 +49,16 @@ export function CheckoutForm({ user, plan }: CheckoutFormProps) {
   const Icon = selectedPlan.icon
 
   const handleCheckout = () => {
-    window.location.href = selectedPlan.url
+    // Store plan info for webhook processing
+    localStorage.setItem('checkout_plan', plan)
+    localStorage.setItem('checkout_user_id', user.id)
+    
+    // Add success URL parameter to Stripe checkout
+    const successUrl = `${window.location.origin}/checkout/return?plan=${plan}`
+    const checkoutUrl = `${selectedPlan.url}?success_url=${encodeURIComponent(successUrl)}`
+    
+    // Redirect to Stripe
+    window.location.href = checkoutUrl
   }
 
   return (

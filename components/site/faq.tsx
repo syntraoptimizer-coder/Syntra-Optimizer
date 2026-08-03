@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { ChevronDown } from 'lucide-react'
 import { SectionHeading } from '@/components/site/section-heading'
-import { cn } from '@/lib/utils'
 
 const FAQS = [
   {
@@ -32,30 +31,48 @@ const FAQS = [
   },
 ]
 
-function FaqItem({ q, a, isOpen, onToggle }: { q: string; a: string; isOpen: boolean; onToggle: () => void }) {
+function FaqItem({
+  q,
+  a,
+  isOpen,
+  onToggle,
+}: {
+  q: string
+  a: string
+  isOpen: boolean
+  onToggle: () => void
+}) {
   return (
-    <div className="border-b border-border">
+    <div style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
       <h3>
         <button
           type="button"
           onClick={onToggle}
           aria-expanded={isOpen}
-          className="flex w-full items-center justify-between gap-4 py-5 text-left text-base font-medium transition-colors hover:text-primary"
+          className="flex w-full items-center justify-between gap-4 py-5 text-left text-sm font-medium transition-colors duration-200"
+          style={{ color: isOpen ? '#ffffff' : 'rgba(255,255,255,0.7)' }}
         >
           {q}
           <ChevronDown
-            className={cn('size-5 shrink-0 text-muted-foreground transition-transform', isOpen && 'rotate-180 text-primary')}
+            className="size-4 shrink-0 transition-transform duration-300"
+            style={{
+              color: isOpen ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.3)',
+              transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+            }}
           />
         </button>
       </h3>
       <div
-        className={cn(
-          'grid overflow-hidden transition-all duration-300',
-          isOpen ? 'grid-rows-[1fr] pb-5' : 'grid-rows-[0fr]',
-        )}
+        className="grid overflow-hidden transition-all duration-300"
+        style={{ gridTemplateRows: isOpen ? '1fr' : '0fr' }}
       >
         <div className="overflow-hidden">
-          <p className="text-sm leading-relaxed text-muted-foreground">{a}</p>
+          <p
+            className="pb-5 text-sm leading-relaxed"
+            style={{ color: 'rgba(255,255,255,0.42)', fontWeight: 300 }}
+          >
+            {a}
+          </p>
         </div>
       </div>
     </div>
@@ -67,9 +84,9 @@ export function Faq() {
 
   return (
     <section id="faq" className="scroll-mt-16">
-      <div className="mx-auto max-w-3xl px-4 py-20 sm:px-6">
+      <div className="mx-auto max-w-3xl px-4 py-24 sm:px-6">
         <SectionHeading eyebrow="FAQ" title="Questions, answered" />
-        <div className="mt-10">
+        <div className="mt-12">
           {FAQS.map((faq, i) => (
             <FaqItem
               key={faq.q}
