@@ -3,11 +3,11 @@ import { NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { createClient } from '@/lib/supabase/server'
 
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!
-
 export async function POST(req: Request) {
   const stripeKey = process.env.STRIPE_SECRET_KEY
-  if (!stripeKey) {
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET
+
+  if (!stripeKey || !webhookSecret) {
     return NextResponse.json({ error: 'Stripe not configured' }, { status: 500 })
   }
 
@@ -17,7 +17,12 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.text()
-    const signature = headers().get('stripe-signature')!
+    const headersList = await headers()
+    const signature = headersList.get('stripe-signature')
+
+    if (!signature) {
+      return NextResponse.json({ error: 'Missing stripe-signature' }, { status: 400 })
+    }
 
     let event: Stripe.Event
 
@@ -35,28 +40,24 @@ export async function POST(req: Request) {
         const session = event.data.object as Stripe.Checkout.Session
         const customerId = session.customer as string
         const userId = session.metadata?.user_id
+        const plan = session.metadata?.plan
 
         if (userId) {
-          // Update user role based on the product purchased
-          const lineItems = await stripe.checkout.sessions.listLineItems(session.id)
-          const priceId = lineItems.data[0]?.price.id
+          const role = plan === 'service' ? 'service' : 'premium'
 
-          // Determine role based on price/product
-          let role = 'premium'
-          if (priceId === 'price_service_id') {
-            role = 'service'
-          }
-
-          // Update user role in database
-          await supabase
+          const { error } = await supabase
             .from('user_roles')
-            .update({ 
+            .update({
               role,
               stripe_customer_id: customerId,
-              stripe_subscription_id: session.subscription as string,
-              updated_at: new Date().toISOString()
+              updated_at: new Date().toISOString(),
             })
             .eq('user_id', userId)
+
+          if (error) {
+            console.error('Supabase update error:', error)
+            return NextResponse.json({ error: 'DB update failed' }, { status: 500 })
+          }
         }
         break
       }
@@ -65,13 +66,11 @@ export async function POST(req: Request) {
         const subscription = event.data.object as Stripe.Subscription
         const customerId = subscription.customer as string
 
-        // Downgrade user to free when subscription is cancelled
         await supabase
           .from('user_roles')
-          .update({ 
+          .update({
             role: 'free',
-            stripe_subscription_id: null,
-            updated_at: new Date().toISOString()
+            updated_at: new Date().toISOString(),
           })
           .eq('stripe_customer_id', customerId)
         break
