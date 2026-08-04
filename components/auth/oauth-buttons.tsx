@@ -33,39 +33,46 @@ export function OAuthButtons() {
     const supabase = createClient()
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
+      options: { redirectTo: `${window.location.origin}/auth/callback` },
     })
     if (error) {
       setLoading(null)
-      setError(`OAuth ${provider} failed. Check it is enabled in your Supabase dashboard (Auth → Providers).`)
+      setError(`${provider} sign-in failed. Please try again.`)
     }
   }
 
   return (
     <div className="space-y-3">
       <div className="grid grid-cols-2 gap-3">
-        <button
-          type="button"
-          disabled={loading !== null}
-          onClick={() => handleOAuth('google')}
-          className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-border bg-background text-sm font-medium transition-colors hover:bg-muted disabled:opacity-60"
-        >
-          {loading === 'google' ? <Loader2 className="size-4 animate-spin" /> : <GoogleIcon />}
-          Google
-        </button>
-        <button
-          type="button"
-          disabled={loading !== null}
-          onClick={() => handleOAuth('discord')}
-          className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-border bg-background text-sm font-medium transition-colors hover:bg-muted disabled:opacity-60"
-        >
-          {loading === 'discord' ? <Loader2 className="size-4 animate-spin" /> : <DiscordIcon />}
-          Discord
-        </button>
+        {(['google', 'discord'] as const).map((provider) => (
+          <button
+            key={provider}
+            type="button"
+            disabled={loading !== null}
+            onClick={() => handleOAuth(provider)}
+            className="inline-flex h-10 items-center justify-center gap-2 rounded-xl text-sm font-light capitalize transition-all duration-200 hover:-translate-y-px disabled:opacity-50"
+            style={{
+              background: 'rgba(255,255,255,0.04)',
+              border: '1px solid rgba(255,255,255,0.1)',
+              color: 'rgba(255,255,255,0.75)',
+            }}
+          >
+            {loading === provider ? (
+              <Loader2 className="size-4 animate-spin" />
+            ) : provider === 'google' ? (
+              <GoogleIcon />
+            ) : (
+              <DiscordIcon />
+            )}
+            {provider.charAt(0).toUpperCase() + provider.slice(1)}
+          </button>
+        ))}
       </div>
-      {error && <p className="text-xs text-destructive">{error}</p>}
+      {error && (
+        <p className="text-xs" style={{ color: 'rgba(255,100,100,0.9)' }}>
+          {error}
+        </p>
+      )}
     </div>
   )
 }

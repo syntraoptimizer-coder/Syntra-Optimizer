@@ -18,9 +18,14 @@ export function SignOutButton() {
     <button
       type="button"
       onClick={handleSignOut}
-      className="inline-flex h-9 items-center gap-2 rounded-lg border border-border px-3 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+      className="inline-flex h-8 items-center gap-2 rounded-full px-3 text-sm transition-all duration-200 hover:-translate-y-px"
+      style={{
+        background: 'rgba(255,255,255,0.05)',
+        border: '1px solid rgba(255,255,255,0.1)',
+        color: 'rgba(255,255,255,0.5)',
+      }}
     >
-      <LogOut className="size-4" />
+      <LogOut className="size-3.5" />
       Sign out
     </button>
   )
