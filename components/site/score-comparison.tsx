@@ -46,16 +46,29 @@ function Gauge({
   return (
     <div className="flex flex-col items-center">
       <div
-        className="relative rounded-full p-2"
-        style={{
-          background: isAfter
-            ? 'radial-gradient(circle at 50% 50%, rgba(255,255,255,0.07) 0%, transparent 65%)'
-            : 'transparent',
-          boxShadow: isAfter ? '0 0 80px -10px rgba(255,255,255,0.35), 0 0 40px -5px rgba(255,255,255,0.2)' : 'none',
-          overflow: 'visible',
-        }}
+        className="relative p-2"
+        style={{ overflow: 'visible' }}
       >
-        <svg width={size} height={size} className="-rotate-90">
+        {/* Glow orb behind the gauge — absolutely positioned, no clipping */}
+        {isAfter && (
+          <div
+            aria-hidden="true"
+            style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: size + 80,
+              height: size + 80,
+              borderRadius: '50%',
+              background: 'radial-gradient(circle, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 40%, transparent 70%)',
+              filter: 'blur(18px)',
+              pointerEvents: 'none',
+              zIndex: 0,
+            }}
+          />
+        )}
+        <svg width={size} height={size} className="-rotate-90" style={{ position: 'relative', zIndex: 1 }}>
           {/* Track */}
           <circle
             cx={size / 2}
