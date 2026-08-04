@@ -221,17 +221,17 @@
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 700px;
-  height: 280px;
+  width: 900px;
+  height: 320px;
   pointer-events: none;
   mix-blend-mode: screen;
-  filter: blur(55px);
-  opacity: 0.55;
+  filter: blur(70px);
+  opacity: 0.35;
   background:
-    radial-gradient(35% 48% at 48% 54%, rgba(255, 255, 255, 0.88) 0%, rgba(255, 255, 255, 0.15) 32%, transparent 54%),
-    radial-gradient(65% 70% at 54% 46%, rgba(255, 255, 255, 0.22) 0%, transparent 58%);
-  mask-image: radial-gradient(ellipse 64% 62% at 50% 52%, #000 0%, rgba(0,0,0,0.5) 44%, transparent 80%);
-  -webkit-mask-image: radial-gradient(ellipse 64% 62% at 50% 52%, #000 0%, rgba(0,0,0,0.5) 44%, transparent 80%);
+    radial-gradient(65% 70% at 48% 50%, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.08) 55%, transparent 80%),
+    radial-gradient(80% 80% at 52% 50%, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 15%, #000 85%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 15%, #000 85%, transparent 100%);
 }
 
 /* Eco tiles (section background grid) */

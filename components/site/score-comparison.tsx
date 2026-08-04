@@ -49,26 +49,8 @@ function Gauge({
         className="relative p-2"
         style={{ overflow: 'visible' }}
       >
-        {/* Glow orb behind the gauge — absolutely positioned, no clipping */}
-        {isAfter && (
-          <div
-            aria-hidden="true"
-            style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: size + 80,
-              height: size + 80,
-              borderRadius: '50%',
-              background: 'radial-gradient(circle, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 40%, transparent 70%)',
-              filter: 'blur(18px)',
-              pointerEvents: 'none',
-              zIndex: 0,
-            }}
-          />
-        )}
-        <svg width={size} height={size} className="-rotate-90" style={{ position: 'relative', zIndex: 1 }}>
+        {/* No extra div — glow only via SVG drop-shadow filter on the stroke */}
+        <svg width={size} height={size} className="-rotate-90" style={{ position: 'relative', zIndex: 1, overflow: 'visible' }}>
           {/* Track */}
           <circle
             cx={size / 2}
@@ -89,7 +71,7 @@ function Gauge({
             strokeLinecap="round"
             strokeDasharray={circumference}
             strokeDashoffset={offset}
-            style={{ filter: isAfter ? 'drop-shadow(0 0 8px rgba(255,255,255,0.55))' : 'none' }}
+            style={{ filter: isAfter ? 'drop-shadow(0 0 6px rgba(255,255,255,0.9)) drop-shadow(0 0 14px rgba(255,255,255,0.5))' : 'none' }}
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
