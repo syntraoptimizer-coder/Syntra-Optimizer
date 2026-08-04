@@ -27,7 +27,7 @@ function BenchmarkCard({ data, active }: { data: Benchmark; active: boolean }) {
   const afterPct = (data.after / maxFps) * 100
 
   return (
-    <div className="glass-card glass-card-hover rounded-2xl p-6">
+    <div className="eco-card glass-card rounded-2xl p-6 overflow-hidden">
       <div className="flex items-start justify-between gap-3">
         <h3
           className="text-base font-medium"

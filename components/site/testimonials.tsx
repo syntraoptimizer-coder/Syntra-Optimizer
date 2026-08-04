@@ -68,7 +68,7 @@ export function Testimonials() {
           {TESTIMONIALS.map((t) => (
             <figure
               key={t.name}
-              className="glass-card glass-card-hover rounded-2xl p-6"
+              className="eco-card glass-card rounded-2xl p-6 overflow-hidden"
             >
               {/* Stars */}
               <div

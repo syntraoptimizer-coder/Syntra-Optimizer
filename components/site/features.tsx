@@ -63,7 +63,7 @@ export function Features() {
           {FEATURES.map((feature) => (
             <div
               key={feature.title}
-              className="glass-card glass-card-hover group rounded-2xl p-6"
+              className="eco-card glass-card rounded-2xl p-6 overflow-hidden group"
             >
               {/* Icon */}
               <div

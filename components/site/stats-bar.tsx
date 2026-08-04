@@ -18,7 +18,6 @@ const STATS: Stat[] = [
 
 function useCountUp(target: number, active: boolean, decimals = 0, duration = 1600) {
   const [value, setValue] = useState(0)
-
   useEffect(() => {
     if (!active) return
     let raf = 0
@@ -32,34 +31,56 @@ function useCountUp(target: number, active: boolean, decimals = 0, duration = 16
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
   }, [target, active, duration])
-
   return decimals > 0 ? value.toFixed(decimals) : Math.round(value).toLocaleString('en-US')
 }
 
-function StatItem({ stat, active }: { stat: Stat; active: boolean }) {
+function StatItem({ stat, active, index }: { stat: Stat; active: boolean; index: number }) {
   const display = useCountUp(stat.value, active, stat.decimals ?? 0)
+
+  // Asymmetric gradient — left stats lit from right, right stats lit from left (Palace Hub style)
+  const gradientImage = index < 2
+    ? 'radial-gradient(135% 150% at 104% 78%, #ffffff 0%, rgba(255,255,255,0.82) 26%, rgba(190,190,190,0.65) 66%, rgba(130,130,130,0.5) 100%)'
+    : 'radial-gradient(135% 150% at -4% 78%, #ffffff 0%, rgba(255,255,255,0.82) 26%, rgba(190,190,190,0.65) 66%, rgba(130,130,130,0.5) 100%)'
+
   return (
-    <div className="text-center">
+    <div className="relative text-center">
+      {/* Subtle glow dot behind number */}
       <div
-        className="font-mono tracking-tight tabular-nums"
+        aria-hidden="true"
         style={{
-          fontSize: 'clamp(2.2rem, 4vw, 3.4rem)',
-          fontWeight: 300,
-          color: 'transparent',
-          backgroundImage:
-            'radial-gradient(110% 130% at 50% 80%, #ffffff 0%, rgba(255,255,255,0.82) 32%, rgba(190,190,190,0.65) 72%, rgba(130,130,130,0.5) 100%)',
-          WebkitBackgroundClip: 'text',
-          backgroundClip: 'text',
+          position: 'absolute',
+          top: '40%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: 80,
+          height: 80,
+          borderRadius: '50%',
+          background: 'rgba(255,255,255,0.9)',
+          filter: 'blur(28px)',
+          opacity: 0.1,
+          pointerEvents: 'none',
         }}
-      >
-        {display}
-        {stat.suffix ?? ''}
-      </div>
-      <div
-        className="mt-1.5 text-sm font-light"
-        style={{ color: 'rgba(255,255,255,0.38)' }}
-      >
-        {stat.label}
+      />
+      <div className="relative z-10">
+        <div
+          className="font-mono tracking-tight tabular-nums"
+          style={{
+            fontSize: 'clamp(2.2rem, 4vw, 3.4rem)',
+            fontWeight: 300,
+            color: 'transparent',
+            backgroundImage: gradientImage,
+            WebkitBackgroundClip: 'text',
+            backgroundClip: 'text',
+          }}
+        >
+          {display}{stat.suffix ?? ''}
+        </div>
+        <div className="mt-2 flex items-center justify-center gap-2">
+          <span className="live-dot" aria-hidden="true" />
+          <span className="text-sm font-light" style={{ color: 'rgba(255,255,255,0.38)' }}>
+            {stat.label}
+          </span>
+        </div>
       </div>
     </div>
   )
@@ -73,12 +94,7 @@ export function StatsBar() {
     const el = ref.current
     if (!el) return
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setActive(true)
-          observer.disconnect()
-        }
-      },
+      ([entry]) => { if (entry.isIntersecting) { setActive(true); observer.disconnect() } },
       { threshold: 0.3 },
     )
     observer.observe(el)
@@ -94,27 +110,8 @@ export function StatsBar() {
         ref={ref}
         className="relative z-10 mx-auto grid max-w-6xl grid-cols-2 gap-8 px-4 py-14 sm:px-6 md:grid-cols-4"
       >
-        {STATS.map((stat) => (
-          <div key={stat.label} className="relative text-center">
-            {/* Small glow dot under each number */}
-            <div
-              aria-hidden="true"
-              style={{
-                position: 'absolute',
-                top: '40%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                width: 80,
-                height: 80,
-                borderRadius: '50%',
-                background: 'rgba(255,255,255,0.9)',
-                filter: 'blur(28px)',
-                opacity: 0.12,
-                pointerEvents: 'none',
-              }}
-            />
-            <StatItem stat={stat} active={active} />
-          </div>
+        {STATS.map((stat, index) => (
+          <StatItem key={stat.label} stat={stat} active={active} index={index} />
         ))}
       </div>
     </section>
