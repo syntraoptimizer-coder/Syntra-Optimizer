@@ -38,8 +38,11 @@ function formatDate(date: string | null) {
 export function UpdateTimeline({ updates }: { updates: UpdateItem[] }) {
   if (updates.length === 0) {
     return (
-      <div className="mt-4 rounded-xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
-        No updates yet. Insert rows in your Supabase <code className="font-mono">updates</code> table.
+      <div
+        className="mt-4 rounded-xl p-8 text-center text-sm"
+        style={{ border: '1px dashed rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.35)' }}
+      >
+        No updates available yet. Check back soon.
       </div>
     )
   }

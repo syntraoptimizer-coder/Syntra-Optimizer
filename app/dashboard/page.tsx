@@ -115,7 +115,7 @@ export default async function DashboardPage() {
                 style={{ background: 'rgba(255,255,255,0.07)', color: 'rgba(255,255,255,0.7)' }}>
                 <PackageCheck className="size-4" />
               </div>
-              <h2 className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.85)' }}>Mini updates</h2>
+              <h2 className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.85)' }}>Syntra Optimizer Updates</h2>
             </div>
             <UpdateTimeline updates={updates ?? []} />
           </section>
