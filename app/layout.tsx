@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     template: '%s | Syntra Optimizer',
   },
   description:
-    'Syntra Optimizer boosts your Windows 10/11 PC with automatic fixes, debloating, network tuning, and a dedicated game optimizer. Higher FPS, faster boots, cleaner systems.',
+    'Boost your Windows 10/11 PC with one click. Auto fixes, debloating, network tuning & game optimizer. Higher FPS, faster boots, cleaner system.',
   keywords: [
     'PC optimizer',
     'Windows optimizer',
@@ -60,7 +60,7 @@ export const metadata: Metadata = {
     siteName: 'Syntra Optimizer',
     title: 'Syntra Optimizer — Optimize your PC. Instantly.',
     description:
-      'Boost FPS, cut boot times, and clean your Windows PC in one click. Trusted by 100+ gamers and creators.',
+      'Boost FPS, cut boot times & clean your Windows PC in one click. Trusted by 100+ gamers.',
     images: [
       {
         url: '/og-image.png',
