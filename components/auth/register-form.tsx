@@ -44,7 +44,17 @@ export function RegisterForm() {
     })
     if (error) {
       setStatus('idle')
-      setErrors({ form: error.message })
+      if (error.message.toLowerCase().includes('already registered') || error.message.toLowerCase().includes('already exists')) {
+        setErrors({ form: 'An account with this email already exists. Sign in instead.' })
+      } else {
+        setErrors({ form: error.message })
+      }
+      return
+    }
+    // If user exists but is unconfirmed, Supabase returns a fake success with no session
+    if (!data.user || (data.user && !data.session && !data.user.identities?.length)) {
+      setStatus('idle')
+      setErrors({ form: 'An account with this email already exists. Sign in instead.' })
       return
     }
     if (data.user) {
@@ -134,10 +144,21 @@ export function RegisterForm() {
       </div>
       <form onSubmit={handleSubmit} noValidate className="space-y-4">
         {errors.form && (
-          <p className="rounded-xl px-3.5 py-2.5 text-sm"
-            style={{ background: 'rgba(255,80,80,0.08)', border: '1px solid rgba(255,80,80,0.2)', color: 'rgba(255,120,120,0.9)' }}>
+          <div
+            className="rounded-xl px-3.5 py-2.5 text-sm"
+            style={{ background: 'rgba(255,80,80,0.08)', border: '1px solid rgba(255,80,80,0.2)', color: 'rgba(255,120,120,0.9)' }}
+          >
             {errors.form}
-          </p>
+            {errors.form.includes('already exists') && (
+              <Link
+                href="/login"
+                className="ml-2 font-medium underline transition-colors hover:text-white"
+                style={{ color: 'rgba(255,160,160,0.9)' }}
+              >
+                Sign in →
+              </Link>
+            )}
+          </div>
         )}
         <Field label="Full name" autoComplete="name" placeholder="Alex Morgan"
           value={values.name} error={errors.name}
