@@ -79,6 +79,12 @@
     @apply bg-background text-foreground;
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  input, textarea, [contenteditable] {
+    user-select: text;
+    -webkit-user-select: text;
   }
 }
 

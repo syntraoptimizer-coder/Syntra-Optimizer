@@ -90,15 +90,31 @@ export function StatsBar() {
       className="relative overflow-hidden"
       style={{ borderTop: '1px solid rgba(255,255,255,0.07)', borderBottom: '1px solid rgba(255,255,255,0.07)' }}
     >
-      {/* Glow behind numbers */}
-      <div className="num-light" aria-hidden="true" />
-
       <div
         ref={ref}
         className="relative z-10 mx-auto grid max-w-6xl grid-cols-2 gap-8 px-4 py-14 sm:px-6 md:grid-cols-4"
       >
         {STATS.map((stat) => (
-          <StatItem key={stat.label} stat={stat} active={active} />
+          <div key={stat.label} className="relative text-center">
+            {/* Small glow dot under each number */}
+            <div
+              aria-hidden="true"
+              style={{
+                position: 'absolute',
+                top: '40%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: 80,
+                height: 80,
+                borderRadius: '50%',
+                background: 'rgba(255,255,255,0.9)',
+                filter: 'blur(28px)',
+                opacity: 0.12,
+                pointerEvents: 'none',
+              }}
+            />
+            <StatItem stat={stat} active={active} />
+          </div>
         ))}
       </div>
     </section>
