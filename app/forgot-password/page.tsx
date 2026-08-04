@@ -4,8 +4,9 @@ import { AuthShell } from '@/components/auth/auth-shell'
 import { ForgotPasswordForm } from '@/components/auth/forgot-password-form'
 
 export const metadata: Metadata = {
-  title: 'Forgot Password — Syntra Optimizer',
-  description: 'Reset your Syntra Optimizer password.',
+  title: 'Reset Password — Syntra Optimizer',
+  description: 'Reset your Syntra Optimizer account password.',
+  robots: { index: false },
 }
 
 export default function ForgotPasswordPage() {

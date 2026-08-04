@@ -4,7 +4,8 @@ import { Footer } from '@/components/site/footer'
 
 export const metadata: Metadata = {
   title: 'Terms of Service — Syntra Optimizer',
-  description: 'Terms and conditions for using Syntra Optimizer.',
+  description: 'Read the Syntra Optimizer terms of service. Understand your rights and responsibilities when using our software.',
+  alternates: { canonical: 'https://www.syntraoptimizer.site/terms' },
 }
 
 export default function TermsPage() {

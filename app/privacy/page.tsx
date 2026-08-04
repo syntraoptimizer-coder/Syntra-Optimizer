@@ -4,7 +4,8 @@ import { Footer } from '@/components/site/footer'
 
 export const metadata: Metadata = {
   title: 'Privacy Policy — Syntra Optimizer',
-  description: 'Learn how Syntra Optimizer collects, uses, and protects your data.',
+  description: 'Read the Syntra Optimizer privacy policy. Learn how we collect, use, and protect your personal data.',
+  alternates: { canonical: 'https://www.syntraoptimizer.site/privacy' },
 }
 
 export default function PrivacyPage() {

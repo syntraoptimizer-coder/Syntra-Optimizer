@@ -3,8 +3,9 @@ import { AuthShell } from '@/components/auth/auth-shell'
 import { RegisterForm } from '@/components/auth/register-form'
 
 export const metadata: Metadata = {
-  title: 'Create account — Syntra Optimizer',
-  description: 'Create your Syntra Optimizer account and start optimizing your PC.',
+  title: 'Create Account — Syntra Optimizer',
+  description: 'Create your free Syntra Optimizer account. Get started in seconds and optimize your Windows PC today.',
+  robots: { index: false },
 }
 
 export default function RegisterPage() {

@@ -7,11 +7,15 @@ import { LenisProvider } from '@/components/site/lenis-provider'
 const geistSans = Geist({
   subsets: ['latin'],
   variable: '--font-geist-sans',
+  display: 'swap',
+  preload: true,
 })
 
 const geistMono = Geist_Mono({
   subsets: ['latin'],
   variable: '--font-geist-mono',
+  display: 'swap',
+  preload: false,
 })
 
 const BASE_URL = 'https://www.syntraoptimizer.site'

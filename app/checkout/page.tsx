@@ -1,5 +1,12 @@
-import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Checkout — Syntra Optimizer',
+  description: 'Complete your Syntra Optimizer purchase. One-time payment, instant access.',
+  robots: { index: false },
+}
+
+
 import { Suspense } from 'react'
 import { CheckoutForm } from '@/components/checkout/checkout-form'
 

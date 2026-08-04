@@ -4,8 +4,9 @@ import { AuthShell } from '@/components/auth/auth-shell'
 import { LoginForm } from '@/components/auth/login-form'
 
 export const metadata: Metadata = {
-  title: 'Log in — Syntra Optimizer',
-  description: 'Sign in to your Syntra Optimizer account.',
+  title: 'Sign In — Syntra Optimizer',
+  description: 'Sign in to your Syntra Optimizer account. Access your dashboard, downloads, and optimization tools.',
+  robots: { index: false },
 }
 
 export default function LoginPage() {
