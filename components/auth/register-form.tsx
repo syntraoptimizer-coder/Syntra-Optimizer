@@ -52,22 +52,74 @@ export function RegisterForm() {
     }
     setStatus('success')
     if (data.session) {
-      router.push('/dashboard')
-      router.refresh()
+      setTimeout(() => {
+        router.push('/dashboard')
+        router.refresh()
+      }, 3000)
     }
   }
 
   if (status === 'success') {
     return (
-      <div
-        className="rounded-2xl p-6 text-center"
-        style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)' }}
-      >
-        <CheckCircle2 className="mx-auto size-8" style={{ color: 'rgba(255,255,255,0.8)' }} />
-        <h2 className="mt-3 font-medium" style={{ color: '#ffffff' }}>Account created</h2>
-        <p className="mt-1 text-sm" style={{ color: 'rgba(255,255,255,0.4)', fontWeight: 300 }}>
-          Welcome, {values.name.split(' ')[0]}! Check your inbox to verify your email.
-        </p>
+      <div className="flex flex-col items-center justify-center gap-6 py-8 text-center">
+        {/* Animated checkmark */}
+        <div
+          className="grid size-16 place-items-center rounded-2xl"
+          style={{
+            background: 'rgba(255,255,255,0.07)',
+            border: '1px solid rgba(255,255,255,0.14)',
+            boxShadow: '0 0 40px -10px rgba(255,255,255,0.3)',
+            animation: 'fadeInScale 0.4s ease',
+          }}
+        >
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        </div>
+
+        <div>
+          <h2
+            className="text-xl font-light tracking-tight"
+            style={{
+              color: '#ffffff',
+              letterSpacing: '-0.022em',
+            }}
+          >
+            Welcome, {values.name.split(' ')[0]} 👋
+          </h2>
+          <p
+            className="mt-2 text-sm font-light"
+            style={{ color: 'rgba(255,255,255,0.42)' }}
+          >
+            Your account is ready. Taking you to your dashboard…
+          </p>
+        </div>
+
+        {/* Progress bar */}
+        <div
+          className="w-32 overflow-hidden rounded-full"
+          style={{ height: 2, background: 'rgba(255,255,255,0.08)' }}
+        >
+          <div
+            style={{
+              height: '100%',
+              background: 'rgba(255,255,255,0.7)',
+              borderRadius: 999,
+              animation: 'progressBar 3s linear forwards',
+            }}
+          />
+        </div>
+
+        <style>{`
+          @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.85); }
+            to { opacity: 1; transform: scale(1); }
+          }
+          @keyframes progressBar {
+            from { width: 0%; }
+            to { width: 100%; }
+          }
+        `}</style>
       </div>
     )
   }
