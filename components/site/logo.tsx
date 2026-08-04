@@ -15,7 +15,6 @@ export function Logo({ className }: { className?: string }) {
         width={32}
         height={32}
         className="rounded-xl"
-        style={{ boxShadow: '0 0 16px -4px rgba(120,100,255,0.5)' }}
         priority
       />
       <span

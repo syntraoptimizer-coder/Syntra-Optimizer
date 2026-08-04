@@ -49,9 +49,10 @@ function Gauge({
         className="relative rounded-full p-2"
         style={{
           background: isAfter
-            ? 'radial-gradient(circle at 50% 60%, rgba(255,255,255,0.06) 0%, transparent 70%)'
+            ? 'radial-gradient(circle at 50% 50%, rgba(255,255,255,0.07) 0%, transparent 65%)'
             : 'transparent',
-          boxShadow: isAfter ? '0 0 60px -20px rgba(255,255,255,0.25)' : 'none',
+          boxShadow: isAfter ? '0 0 80px -10px rgba(255,255,255,0.35), 0 0 40px -5px rgba(255,255,255,0.2)' : 'none',
+          overflow: 'visible',
         }}
       >
         <svg width={size} height={size} className="-rotate-90">
