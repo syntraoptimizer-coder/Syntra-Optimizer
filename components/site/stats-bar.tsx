@@ -37,7 +37,7 @@ function useCountUp(target: number, active: boolean, decimals = 0, duration = 16
 function StatItem({ stat, active, index }: { stat: Stat; active: boolean; index: number }) {
   const display = useCountUp(stat.value, active, stat.decimals ?? 0)
 
-  // Asymmetric gradient — left stats lit from right, right stats lit from left (Palace Hub style)
+  // Asymmetric gradient — left stats lit from right, right stats lit from left
   const gradientImage = index < 2
     ? 'radial-gradient(135% 150% at 104% 78%, #ffffff 0%, rgba(255,255,255,0.82) 26%, rgba(190,190,190,0.65) 66%, rgba(130,130,130,0.5) 100%)'
     : 'radial-gradient(135% 150% at -4% 78%, #ffffff 0%, rgba(255,255,255,0.82) 26%, rgba(190,190,190,0.65) 66%, rgba(130,130,130,0.5) 100%)'
