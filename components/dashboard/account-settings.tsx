@@ -24,13 +24,18 @@ export function AccountSettings() {
   async function handleLinkDiscord() {
     setDiscordStatus('loading')
     const supabase = createClient()
-    await supabase.auth.signInWithOAuth({
+    // linkIdentity links Discord to the existing account without creating a new session
+    const { error } = await supabase.auth.linkIdentity({
       provider: 'discord',
       options: {
         redirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
         scopes: 'identify email guilds',
       },
     })
+    if (error) {
+      console.error('Discord link error:', error)
+      setDiscordStatus('idle')
+    }
   }
 
   return (
