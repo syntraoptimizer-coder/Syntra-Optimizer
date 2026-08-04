@@ -26,6 +26,18 @@ export async function GET(request: Request) {
           role: 'free',
           updated_at: new Date().toISOString(),
         })
+
+        // Mark as new user so dashboard can show welcome message
+        const redirectUrl = new URL(`${origin}${next}`)
+        redirectUrl.searchParams.set('welcome', '1')
+
+        const forwardedHost = request.headers.get('x-forwarded-host')
+        const isLocalEnv = process.env.NODE_ENV === 'development'
+        if (!isLocalEnv && forwardedHost) {
+          redirectUrl.hostname = forwardedHost
+          redirectUrl.protocol = 'https:'
+        }
+        return NextResponse.redirect(redirectUrl.toString())
       }
       // If row exists, never downgrade — leave role as-is
 

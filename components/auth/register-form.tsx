@@ -61,12 +61,11 @@ export function RegisterForm() {
       await supabase.from('profiles').upsert({ id: data.user.id, full_name: values.name.trim(), email: values.email })
     }
     setStatus('success')
-    if (data.session) {
-      setTimeout(() => {
-        router.push('/dashboard')
-        router.refresh()
-      }, 3000)
-    }
+    // With email confirmation ON, session is null — redirect after 3s anyway
+    setTimeout(() => {
+      router.push('/dashboard')
+      router.refresh()
+    }, 3000)
   }
 
   if (status === 'success') {

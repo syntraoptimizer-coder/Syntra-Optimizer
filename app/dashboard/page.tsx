@@ -6,6 +6,7 @@ import { Logo } from '@/components/site/logo'
 import { SignOutButton } from '@/components/dashboard/sign-out'
 import { UpdateTimeline } from '@/components/dashboard/update-timeline'
 import { AccountSettings } from '@/components/dashboard/account-settings'
+import { WelcomeToast } from '@/components/dashboard/welcome-toast'
 
 export const metadata = {
   title: 'Dashboard — Syntra Optimizer',
@@ -61,6 +62,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="min-h-dvh" style={{ background: '#080808' }}>
+      <WelcomeToast name={name.split(' ')[0]} />
       {/* Glow halo top */}
       <div aria-hidden="true" style={{
         position: 'fixed', top: '-10%', left: '50%', transform: 'translateX(-50%)',
