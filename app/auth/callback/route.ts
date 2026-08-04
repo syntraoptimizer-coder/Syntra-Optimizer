@@ -9,8 +9,27 @@ export async function GET(request: Request) {
   if (code) {
     const supabase = await createClient()
     const { data, error } = await supabase.auth.exchangeCodeForSession(code)
-    if (!error) {
-      // If this is a password recovery, redirect to reset-password
+    if (!error && data?.user) {
+      const user = data.user
+
+      // Ensure user_roles row exists — preserve any existing paid role
+      const { data: existingRole } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id)
+        .maybeSingle()
+
+      if (!existingRole) {
+        // New row only if none exists — default to free
+        await supabase.from('user_roles').insert({
+          user_id: user.id,
+          role: 'free',
+          updated_at: new Date().toISOString(),
+        })
+      }
+      // If row exists, never downgrade — leave role as-is
+
+      // Password recovery redirect
       if (data?.user?.recovery_sent_at || searchParams.get('type') === 'recovery') {
         const forwardedHost = request.headers.get('x-forwarded-host')
         const isLocalEnv = process.env.NODE_ENV === 'development'
@@ -19,6 +38,7 @@ export async function GET(request: Request) {
         }
         return NextResponse.redirect(`${origin}/reset-password`)
       }
+
       const forwardedHost = request.headers.get('x-forwarded-host')
       const isLocalEnv = process.env.NODE_ENV === 'development'
       if (!isLocalEnv && forwardedHost) {
