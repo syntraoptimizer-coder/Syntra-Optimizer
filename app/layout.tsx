@@ -105,15 +105,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} bg-background`}>
-      <head>
-        <meta name="source-hint" content="👀 Hey curious dev! Nothing to steal here... Buy Premium instead 😄 → https://www.syntraoptimizer.site/checkout?plan=premium" />
-      </head>
       <body className="font-sans antialiased">
-        <script dangerouslySetInnerHTML={{ __html: `
-          console.log('%c🔍 Looking for secrets?', 'font-size:20px;font-weight:bold;color:#ffffff;background:#080808;padding:8px 16px;border-radius:8px;');
-          console.log('%cNothing to see here... unless you buy Premium 😏', 'font-size:13px;color:rgba(255,255,255,0.6);');
-          console.log('%c👉 https://www.syntraoptimizer.site/checkout?plan=premium', 'font-size:12px;color:rgba(255,255,255,0.4);text-decoration:underline;');
-        ` }} />
         <LenisProvider />
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
