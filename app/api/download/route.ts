@@ -77,42 +77,20 @@ export async function GET(_req: NextRequest) {
 
     if (!bucketId || !bucketName) throw new Error('B2 bucket config missing')
 
-    console.log('[download] step 4: get download auth, file:', filePath)
-    const authRes = await fetch(`${apiUrl}/b2api/v3/b2_get_download_authorization`, {
-      method: 'POST',
-      headers: {
-        Authorization: authorizationToken,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        bucketId,
-        fileNamePrefix: filePath,
-        validDurationInSeconds: 60,
-        b2ContentDisposition: 'attachment; filename="SyntraOptimizer-Setup.exe"',
-      }),
-    })
-
-    if (!authRes.ok) {
-      const text = await authRes.text()
-      throw new Error(`B2 download auth failed: ${authRes.status} ${text}`)
-    }
-
-    const { authorizationToken: dlToken } = await authRes.json()
     const encodedPath = filePath.split('/').map(encodeURIComponent).join('/')
 
-    // Stream the file directly to the client instead of redirecting
-    // This keeps the B2 URL hidden and works with private buckets
-    console.log('[download] step 5: streaming file')
+    // For private buckets, use the main auth token directly to download
+    console.log('[download] step 4: downloading file with main token')
     const fileRes = await fetch(
       `${downloadUrl}/file/${bucketName}/${encodedPath}`,
-      { headers: { Authorization: dlToken } }
+      { headers: { Authorization: authorizationToken } }
     )
 
     if (!fileRes.ok) {
       throw new Error(`B2 file fetch failed: ${fileRes.status}`)
     }
 
-    // Stream the response back to the client with download headers
+    console.log('[download] step 5: streaming file to client')
     return new Response(fileRes.body, {
       headers: {
         'Content-Type': 'application/octet-stream',
