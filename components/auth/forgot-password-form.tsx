@@ -29,7 +29,7 @@ export function ForgotPasswordForm() {
     setStatus('submitting')
     const supabase = createClient()
     const { error } = await supabase.auth.resetPasswordForEmail(values.email, {
-      redirectTo: `${window.location.origin}/auth/callback?next=/reset-password`,
+      redirectTo: `${window.location.origin}/auth/callback?type=recovery`,
     })
     if (error) {
       setStatus('idle')

@@ -45,7 +45,7 @@ export function AccountSettings() {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user?.email) return
     await supabase.auth.resetPasswordForEmail(user.email, {
-      redirectTo: `${window.location.origin}/auth/callback?next=/reset-password`,
+      redirectTo: `${window.location.origin}/auth/callback?type=recovery`,
     })
     setPwStatus('sent')
     setTimeout(() => setPwStatus('idle'), 4000)
