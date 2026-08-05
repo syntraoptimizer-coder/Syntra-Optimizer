@@ -1,7 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
-// ── B2 token cache (valid 24h, reused across requests) ──────────
 let b2Cache: {
   authorizationToken: string
   apiUrl: string
@@ -10,13 +9,13 @@ let b2Cache: {
 } | null = null
 
 async function getB2Token() {
-  // Return cached token if still valid (with 5min buffer)
-  if (b2Cache && Date.now() < b2Cache.expiresAt) {
-    return b2Cache
-  }
+  if (b2Cache && Date.now() < b2Cache.expiresAt) return b2Cache
 
-  const keyId = process.env.B2_KEY_ID!
-  const appKey = process.env.B2_APPLICATION_KEY!
+  const keyId = process.env.B2_KEY_ID
+  const appKey = process.env.B2_APPLICATION_KEY
+
+  if (!keyId || !appKey) throw new Error('B2 credentials missing')
+
   const credentials = Buffer.from(`${keyId}:${appKey}`).toString('base64')
 
   const res = await fetch('https://api.backblazeb2.com/b2api/v3/b2_authorize_account', {
@@ -24,14 +23,15 @@ async function getB2Token() {
   })
 
   if (!res.ok) {
-    throw new Error('B2 auth failed')
+    const text = await res.text()
+    throw new Error(`B2 auth failed: ${res.status} ${text}`)
   }
 
   const data = await res.json()
-
-  // B2 API v3 — downloadUrl is at root level, apiUrl is nested
-  const apiUrl = data.apiInfo?.storageApi?.apiUrl || data.apiUrl
+  const apiUrl = data.apiInfo?.storageApi?.apiUrl ?? data.apiUrl
   const downloadUrl = data.downloadUrl
+
+  if (!apiUrl || !downloadUrl) throw new Error(`B2 missing fields: ${JSON.stringify(data)}`)
 
   b2Cache = {
     authorizationToken: data.authorizationToken,
@@ -45,38 +45,39 @@ async function getB2Token() {
 
 export async function GET(_req: NextRequest) {
   try {
-    // ── 1. Verify Supabase session ──────────────────────────────
+    console.log('[download] step 1: get supabase user')
     const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user }, error: userError } = await supabase.auth.getUser()
 
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    if (userError) throw new Error(`Supabase getUser error: ${userError.message}`)
+    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-    // ── 2. Check premium role ───────────────────────────────────
-    const { data: roleData } = await supabase
+    console.log('[download] step 2: check role for', user.id)
+    const { data: roleData, error: roleError } = await supabase
       .from('user_roles')
       .select('role')
       .eq('user_id', user.id)
       .maybeSingle()
 
+    if (roleError) throw new Error(`Role query error: ${roleError.message}`)
+
     const role = roleData?.role || 'free'
+    console.log('[download] role:', role)
 
     if (role !== 'premium' && role !== 'service') {
-      return NextResponse.json(
-        { error: 'Premium required. Upgrade your plan to download Syntra Optimizer.' },
-        { status: 403 }
-      )
+      return NextResponse.json({ error: 'Premium required' }, { status: 403 })
     }
 
-    // ── 3. Get B2 token (cached) ────────────────────────────────
+    console.log('[download] step 3: get B2 token')
     const { authorizationToken, apiUrl, downloadUrl } = await getB2Token()
 
-    const bucketId = process.env.B2_BUCKET_ID!
-    const bucketName = process.env.B2_BUCKET_NAME!
+    const bucketId = process.env.B2_BUCKET_ID
+    const bucketName = process.env.B2_BUCKET_NAME
     const filePath = process.env.B2_FILE_PATH || 'Syntra Optimizer Setup 1.0.0.exe'
 
-    // ── 4. Get download authorization (signed URL, 60s) ─────────
+    if (!bucketId || !bucketName) throw new Error('B2 bucket config missing')
+
+    console.log('[download] step 4: get download auth, file:', filePath)
     const authRes = await fetch(`${apiUrl}/b2api/v3/b2_get_download_authorization`, {
       method: 'POST',
       headers: {
@@ -92,24 +93,20 @@ export async function GET(_req: NextRequest) {
     })
 
     if (!authRes.ok) {
-      const errText = await authRes.text()
-      console.error('B2 download auth failed:', authRes.status, errText)
-      return NextResponse.json({ error: 'Download unavailable' }, { status: 500 })
+      const text = await authRes.text()
+      throw new Error(`B2 download auth failed: ${authRes.status} ${text}`)
     }
 
     const { authorizationToken: dlToken } = await authRes.json()
-
-    // ── 5. Build signed URL and redirect ───────────────────────
-    const encodedPath = encodeURIComponent(filePath)
+    const encodedPath = filePath.split('/').map(encodeURIComponent).join('/')
     const signedUrl = `${downloadUrl}/file/${bucketName}/${encodedPath}?Authorization=${dlToken}`
 
+    console.log('[download] step 5: redirecting')
     return NextResponse.redirect(signedUrl, { status: 302 })
 
   } catch (err) {
-    console.error('Download error:', err)
-    return NextResponse.json({ 
-      error: 'Download unavailable',
-      detail: err instanceof Error ? err.message : String(err)
-    }, { status: 500 })
+    const msg = err instanceof Error ? err.message : String(err)
+    console.error('[download] ERROR:', msg)
+    return NextResponse.json({ error: 'Download unavailable', detail: msg }, { status: 500 })
   }
 }
