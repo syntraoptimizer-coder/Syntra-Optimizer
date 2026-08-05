@@ -105,6 +105,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} bg-background`}>
+      {/* 
+        👀 Hey, curious dev! 
+        Nothing to steal here...
+        But if you want the real deal, go buy Premium 😄
+        👉 https://www.syntraoptimizer.site/checkout?plan=premium
+      */}
       <body className="font-sans antialiased">
         <script dangerouslySetInnerHTML={{ __html: `
           console.log('%c🔍 Looking for secrets?', 'font-size:20px;font-weight:bold;color:#ffffff;background:#080808;padding:8px 16px;border-radius:8px;');
