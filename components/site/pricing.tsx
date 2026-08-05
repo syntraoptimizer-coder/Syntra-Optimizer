@@ -109,10 +109,10 @@ export function Pricing() {
               >
                 {plan.featured && (
                   <span
-                    className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full px-3 py-0.5 text-xs font-semibold whitespace-nowrap"
+                    className="absolute -top-2.5 right-4 rounded-lg px-2 py-0.5 text-xs font-semibold"
                     style={{ background: 'rgba(255,255,255,0.92)', color: '#080808' }}
                   >
-                    Most popular
+                    Popular
                   </span>
                 )}
 

@@ -43,12 +43,11 @@ const jsonLd = {
 
 export default function HomePage() {
   return (
-    <div className="min-h-dvh pt-10">
+    <div className="min-h-dvh">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <DevBanner />
       <Navbar />
       <main>
         <Hero />
