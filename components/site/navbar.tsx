@@ -66,7 +66,6 @@ export function Navbar() {
     checkUser()
   }, [])
 
-  const getRoleBadge = () => {
   const getRoleBadge = () => (
     <div className="flex items-center gap-1.5">
       {userRole === 'premium' && (
