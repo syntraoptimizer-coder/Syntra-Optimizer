@@ -99,10 +99,27 @@ export async function GET(_req: NextRequest) {
 
     const { authorizationToken: dlToken } = await authRes.json()
     const encodedPath = filePath.split('/').map(encodeURIComponent).join('/')
-    const signedUrl = `${downloadUrl}/file/${bucketName}/${encodedPath}?Authorization=${dlToken}`
 
-    console.log('[download] step 5: redirecting')
-    return NextResponse.redirect(signedUrl, { status: 302 })
+    // Stream the file directly to the client instead of redirecting
+    // This keeps the B2 URL hidden and works with private buckets
+    console.log('[download] step 5: streaming file')
+    const fileRes = await fetch(
+      `${downloadUrl}/file/${bucketName}/${encodedPath}`,
+      { headers: { Authorization: dlToken } }
+    )
+
+    if (!fileRes.ok) {
+      throw new Error(`B2 file fetch failed: ${fileRes.status}`)
+    }
+
+    // Stream the response back to the client with download headers
+    return new Response(fileRes.body, {
+      headers: {
+        'Content-Type': 'application/octet-stream',
+        'Content-Disposition': 'attachment; filename="SyntraOptimizer-Setup.exe"',
+        'Content-Length': fileRes.headers.get('Content-Length') || '',
+      },
+    })
 
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err)
