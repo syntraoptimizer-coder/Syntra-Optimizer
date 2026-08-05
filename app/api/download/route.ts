@@ -29,11 +29,15 @@ async function getB2Token() {
 
   const data = await res.json()
 
+  // B2 API v3 — downloadUrl is at root level, apiUrl is nested
+  const apiUrl = data.apiInfo?.storageApi?.apiUrl || data.apiUrl
+  const downloadUrl = data.downloadUrl
+
   b2Cache = {
     authorizationToken: data.authorizationToken,
-    apiUrl: data.apiInfo.storageApi.apiUrl,
-    downloadUrl: data.downloadUrl,
-    expiresAt: Date.now() + 23 * 60 * 60 * 1000, // 23h
+    apiUrl,
+    downloadUrl,
+    expiresAt: Date.now() + 23 * 60 * 60 * 1000,
   }
 
   return b2Cache
@@ -88,7 +92,8 @@ export async function GET(_req: NextRequest) {
     })
 
     if (!authRes.ok) {
-      console.error('B2 download auth failed:', await authRes.text())
+      const errText = await authRes.text()
+      console.error('B2 download auth failed:', authRes.status, errText)
       return NextResponse.json({ error: 'Download unavailable' }, { status: 500 })
     }
 
@@ -102,6 +107,9 @@ export async function GET(_req: NextRequest) {
 
   } catch (err) {
     console.error('Download error:', err)
-    return NextResponse.json({ error: 'Download unavailable' }, { status: 500 })
+    return NextResponse.json({ 
+      error: 'Download unavailable',
+      detail: err instanceof Error ? err.message : String(err)
+    }, { status: 500 })
   }
 }
