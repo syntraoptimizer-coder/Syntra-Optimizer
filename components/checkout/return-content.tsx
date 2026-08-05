@@ -21,7 +21,7 @@ export function ReturnContent({ user, plan }: ReturnContentProps) {
   const [hasAccess, setHasAccess] = useState(false)
   const supabase = createClient()
 
-  const selectedPlan = PLANS[plan as keyof typeof PLANS] || PLANS.premium
+  const selectedPlan = plan === 'service' ? PLANS.service : PLANS.premium
   const Icon = selectedPlan.icon
 
   useEffect(() => {
