@@ -1,63 +1,68 @@
 import {
-  Wrench,
-  Trash2,
-  Wifi,
+  Zap,
   Gamepad2,
-  HardDrive,
-  Cpu,
+  Wifi,
+  Trash2,
+  MemoryStick,
+  Settings2,
 } from 'lucide-react'
 import { SectionHeading } from '@/components/site/section-heading'
 
 const FEATURES = [
   {
-    icon: Wrench,
-    title: 'Automatic Fixes',
+    icon: Zap,
+    title: 'Windows Performance',
     description:
-      'Detects and repairs registry issues, broken services, and misconfigurations that quietly slow your PC down.',
-  },
-  {
-    icon: Trash2,
-    title: 'Debloat',
-    description:
-      'Removes pre-installed junk, telemetry, and background apps you never asked for — safely and reversibly.',
-  },
-  {
-    icon: Wifi,
-    title: 'Network Optimization',
-    description:
-      'Tunes DNS, TCP, and latency settings to cut ping and stabilize your connection during downloads and matches.',
+      'Boost responsiveness, speed up startup, eliminate unnecessary background activity, and keep Windows running at maximum efficiency.',
+    tag: 'Faster PC',
   },
   {
     icon: Gamepad2,
-    title: 'Game Optimizer',
+    title: 'Gaming Experience',
     description:
-      'Prioritizes GPU and CPU resources per title, disables interruptions, and unlocks smoother, higher FPS.',
+      'Improve FPS, reduce stuttering, minimize input lag, and optimize CPU and GPU resources for smoother gameplay.',
+    tag: 'Higher FPS',
   },
   {
-    icon: HardDrive,
-    title: 'RAM & Disk Cleanup',
+    icon: Wifi,
+    title: 'Network Boost',
     description:
-      'Frees trapped memory and clears gigabytes of cache and temp files without touching what matters.',
+      'Reduce latency, improve connection stability, optimize DNS and network settings for faster online gaming and downloads.',
+    tag: 'Lower Ping',
   },
   {
-    icon: Cpu,
-    title: 'BIOS Tools',
+    icon: Trash2,
+    title: 'Deep Cleanup',
     description:
-      'Guided, safe tweaks for power plans, resizable BAR, and boot settings to get the most from your hardware.',
+      'Remove temporary files, cache, unnecessary components, and system clutter to recover storage and improve performance.',
+    tag: 'Cleaner Windows',
+  },
+  {
+    icon: MemoryStick,
+    title: 'Memory Optimization',
+    description:
+      'Free system memory, optimize resource usage, and improve multitasking for a smoother computing experience.',
+    tag: 'Better Stability',
+  },
+  {
+    icon: Settings2,
+    title: 'Advanced Optimization',
+    description:
+      'Access powerful Windows tweaks, privacy improvements, power settings, and advanced system optimizations for maximum performance.',
+    tag: 'Pro Performance',
   },
 ]
 
 export function Features() {
   return (
     <section id="features" className="relative scroll-mt-16 overflow-hidden">
-      {/* Subtle background grid */}
       <div className="eco-tiles" aria-hidden="true" />
 
       <div className="relative z-10 mx-auto max-w-6xl px-4 py-24 sm:px-6">
         <SectionHeading
-          eyebrow="Everything in one app"
-          title="A full optimization toolkit"
-          description="Six powerful modules that work together to make your PC faster, cleaner, and game-ready."
+          eyebrow="Professional Performance Suite"
+          title="Unlock Your PC's Full Potential"
+          description="Powerful optimization tools designed to maximize Windows performance, increase gaming FPS, reduce latency, and keep your PC running like new."
         />
         <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {FEATURES.map((feature) => (
@@ -65,20 +70,32 @@ export function Features() {
               key={feature.title}
               className="eco-card glass-card rounded-2xl p-6 overflow-hidden group"
             >
-              {/* Icon */}
-              <div
-                className="grid size-11 place-items-center rounded-xl transition-all duration-300 group-hover:scale-110"
-                style={{
-                  background: 'rgba(255,255,255,0.07)',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  color: 'rgba(255,255,255,0.85)',
-                }}
-              >
-                <feature.icon className="size-5" />
+              {/* Tag */}
+              <div className="mb-4 flex items-center justify-between">
+                <div
+                  className="grid size-11 place-items-center rounded-xl transition-all duration-300 group-hover:scale-110"
+                  style={{
+                    background: 'rgba(255,255,255,0.07)',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    color: 'rgba(255,255,255,0.85)',
+                  }}
+                >
+                  <feature.icon className="size-5" />
+                </div>
+                <span
+                  className="rounded-md px-2 py-0.5 text-xs font-medium"
+                  style={{
+                    background: 'rgba(255,255,255,0.06)',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    color: 'rgba(255,255,255,0.5)',
+                  }}
+                >
+                  {feature.tag}
+                </span>
               </div>
 
               <h3
-                className="mt-5 text-base font-medium"
+                className="text-base font-medium"
                 style={{ color: 'rgba(255,255,255,0.9)' }}
               >
                 {feature.title}
@@ -89,6 +106,27 @@ export function Features() {
               >
                 {feature.description}
               </p>
+            </div>
+          ))}
+        </div>
+
+        {/* Bottom highlights row */}
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+          {['Faster PC', 'Higher FPS', 'Lower Ping', 'Better Stability', 'Cleaner Windows', 'Pro Performance'].map((item) => (
+            <div
+              key={item}
+              className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-medium"
+              style={{
+                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                color: 'rgba(255,255,255,0.55)',
+              }}
+            >
+              <span
+                className="size-1.5 rounded-full"
+                style={{ background: 'rgba(255,255,255,0.6)' }}
+              />
+              {item}
             </div>
           ))}
         </div>
