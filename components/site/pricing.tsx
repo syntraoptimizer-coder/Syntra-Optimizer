@@ -108,12 +108,19 @@ export function Pricing() {
                 }
               >
                 {plan.featured && (
-                  <span
-                    className="absolute top-4 right-4 rounded-md px-2 py-0.5 text-xs font-semibold"
-                    style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)', color: 'rgba(255,255,255,0.85)' }}
-                  >
-                    Popular
-                  </span>
+                  <div className="mb-3 flex justify-end">
+                    <span
+                      className="rounded-md px-2 py-0.5 text-xs font-semibold"
+                      style={{
+                        background: 'rgba(255,255,255,0.1)',
+                        border: '1px solid rgba(255,255,255,0.18)',
+                        color: 'rgba(255,255,255,0.75)',
+                        width: 'fit-content',
+                      }}
+                    >
+                      Popular
+                    </span>
+                  </div>
                 )}
 
                 <h3 className="text-base font-medium" style={{ color: plan.featured ? '#ffffff' : 'rgba(255,255,255,0.8)' }}>
