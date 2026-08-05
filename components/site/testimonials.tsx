@@ -30,6 +30,20 @@ const TESTIMONIALS = [
       'I was surprised by how much of a difference this made. My PC runs smoother, applications open faster, and I no longer experience the small stutters I used to have while gaming. The optimization process was quick and straightforward. Great software and definitely worth trying!',
     rating: 5,
   },
+  {
+    name: 'Kevin12',
+    role: 'PC Gamer',
+    quote:
+      'I wasn\'t expecting such a noticeable improvement, but Syntra Optimizer exceeded my expectations. My system is faster, multitasking is smoother, and my games run with better stability. The one-click optimization is incredibly convenient, and everything worked exactly as advertised. Excellent software!',
+    rating: 5,
+  },
+  {
+    name: 'Min12_',
+    role: 'Daily User',
+    quote:
+      'I\'ve been using Syntra Optimizer for a few days now, and the difference is clear. Boot times are shorter, my games feel smoother, and overall system performance has improved. It\'s simple to use, reliable, and does exactly what it promises. Great job!',
+    rating: 5,
+  },
 ]
 
 function initials(name: string) {
