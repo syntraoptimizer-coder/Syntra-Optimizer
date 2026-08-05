@@ -3,45 +3,31 @@ import { SectionHeading } from '@/components/site/section-heading'
 
 const TESTIMONIALS = [
   {
-    name: 'xX_Sn1perGod_Xx',
-    role: 'Valorant Radiant',
+    name: 'Da1ko',
+    role: 'PC Gamer',
     quote:
-      'Ping dropped and my 1% lows got way more stable. Valorant feels completely different now — worth it just for the network tuning.',
+      'Huge thanks for your optimization it\'s absolutely incredible! My PC feels much faster, everything is smoother, and I noticed the improvement right away. I highly recommend Syntra Optimizer to anyone looking to get the most out of their Windows PC. Great work!',
     rating: 5,
   },
   {
-    name: 'Fr0stByte',
-    role: 'Twitch Streamer',
+    name: 'Crinok',
+    role: 'FPS Player',
     quote:
-      'My laptop came loaded with junk. Syntra debloated it in one pass and boot times are almost half what they were.',
+      'I honestly didn\'t expect such a huge improvement. My PC boots much faster, games run noticeably smoother, and I\'ve gained several FPS. The interface is simple to use, and the optimization only takes a few clicks. I highly recommend Syntra Optimizer to anyone looking to boost their PC\'s performance!',
     rating: 5,
   },
   {
-    name: 'N1ghtCr4wler',
+    name: 'NovalPusl',
     role: 'PC Enthusiast',
     quote:
-      'I was skeptical, but the before/after score is real. The BIOS guidance alone saved me an afternoon of research.',
-    rating: 4,
-  },
-  {
-    name: 'cl1ckr4te999',
-    role: 'CS2 Global Elite',
-    quote:
-      'I went with the Done-For-You plan and an expert handled everything remotely. Smooth, safe, and my games run great.',
+      'I\'ve tried several PC optimization tools before, but this one genuinely stands out. My system feels much more responsive, loading times are shorter, and gaming performance has noticeably improved. It\'s easy to use, fast, and delivers real results. Definitely worth it!',
     rating: 5,
   },
   {
-    name: 'V0idW4lker',
-    role: 'Warzone Top 250',
+    name: 'Zenitud',
+    role: 'Casual Gamer',
     quote:
-      'Cleared 12GB of cache and freed up trapped RAM. Everything from Chrome to my game launcher just feels snappier.',
-    rating: 5,
-  },
-  {
-    name: 'Pix3lRush',
-    role: 'Content Creator',
-    quote:
-      'Render exports are faster and my system score jumped from the 60s into the 90s. Easiest optimization I have done.',
+      'I was surprised by how much of a difference this made. My PC runs smoother, applications open faster, and I no longer experience the small stutters I used to have while gaming. The optimization process was quick and straightforward. Great software and definitely worth trying!',
     rating: 5,
   },
 ]
