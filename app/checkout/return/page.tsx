@@ -6,17 +6,15 @@ import { ReturnContent } from '@/components/checkout/return-content'
 export default async function CheckoutReturnPage({
   searchParams,
 }: {
-  searchParams: { plan?: string }
+  searchParams: Promise<{ plan?: string }>
 }) {
   const supabase = await createClient()
-  
   const { data: { user } } = await supabase.auth.getUser()
-  
-  if (!user) {
-    redirect('/login')
-  }
 
-  const plan = searchParams.plan || 'premium'
+  if (!user) redirect('/login')
+
+  const params = await searchParams
+  const plan = params.plan || 'premium'
 
   return (
     <div className="min-h-dvh">
