@@ -8,6 +8,8 @@ import { UpdateTimeline } from '@/components/dashboard/update-timeline'
 import { AccountSettings } from '@/components/dashboard/account-settings'
 import { WelcomeToast } from '@/components/dashboard/welcome-toast'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata = {
   title: 'Dashboard — Syntra Optimizer',
   description: 'Your Syntra Optimizer dashboard.',
