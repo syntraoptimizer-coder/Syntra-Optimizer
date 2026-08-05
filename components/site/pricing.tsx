@@ -109,7 +109,7 @@ export function Pricing() {
               >
                 {plan.featured && (
                   <span
-                    className="absolute -top-3.5 left-6 rounded-full px-3 py-1 text-xs font-semibold"
+                    className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full px-3 py-0.5 text-xs font-semibold whitespace-nowrap"
                     style={{ background: 'rgba(255,255,255,0.92)', color: '#080808' }}
                   >
                     Most popular

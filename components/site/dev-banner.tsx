@@ -24,7 +24,6 @@ export function DevBanner() {
       />
       <p style={{ color: 'rgba(255,200,50,0.85)', fontWeight: 300 }}>
         <span className="font-medium">Site under development</span>
-        {' '}— Please do not make any purchases at this time.
       </p>
       <button
         onClick={() => setVisible(false)}
