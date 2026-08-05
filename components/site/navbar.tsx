@@ -16,7 +16,8 @@ const NAV_LINKS = [
 export function Navbar() {
   const [open, setOpen] = useState(false)
   const [user, setUser] = useState<any>(null)
-  const [userRole, setUserRole] = useState<'free' | 'premium' | 'service'>('free')
+  const [userRole, setUserRole] = useState<'free' | 'premium'>('free')
+  const [serviceCount, setServiceCount] = useState(0)
   const [loading, setLoading] = useState(true)
   const [scrolled, setScrolled] = useState(false)
 
@@ -35,10 +36,11 @@ export function Navbar() {
       if (session?.user) {
         const { data: roleData } = await supabase
           .from('user_roles')
-          .select('role')
+          .select('role, service_count')
           .eq('user_id', session.user.id)
           .maybeSingle()
         setUserRole(roleData?.role || 'free')
+        setServiceCount(roleData?.service_count || 0)
       }
 
       setLoading(false)
@@ -48,10 +50,11 @@ export function Navbar() {
         if (session?.user) {
           const { data: roleData } = await supabase
             .from('user_roles')
-            .select('role')
+            .select('role, service_count')
             .eq('user_id', session.user.id)
             .maybeSingle()
           setUserRole(roleData?.role || 'free')
+          setServiceCount(roleData?.service_count || 0)
         } else {
           setUserRole('free')
         }
@@ -64,31 +67,23 @@ export function Navbar() {
   }, [])
 
   const getRoleBadge = () => {
-    switch (userRole) {
-      case 'premium':
-        return (
-          <div
-            className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium"
-            style={{ background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.8)' }}
-          >
-            <Crown className="size-3" />
-            Premium
-          </div>
-        )
-      case 'service':
-        return (
-          <div
-            className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium"
-            style={{ background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.65)' }}
-          >
-            <Wrench className="size-3" />
-            Service
-          </div>
-        )
-      default:
-        return null
-    }
-  }
+  const getRoleBadge = () => (
+    <div className="flex items-center gap-1.5">
+      {userRole === 'premium' && (
+        <div className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium"
+          style={{ background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.8)' }}>
+          <Crown className="size-3" /> Premium
+        </div>
+      )}
+      {serviceCount > 0 && (
+        <div className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium"
+          style={{ background: 'rgba(88,101,242,0.12)', color: 'rgba(180,185,255,0.9)' }}>
+          <Wrench className="size-3" />
+          {serviceCount > 1 ? `Service x${serviceCount}` : 'Service'}
+        </div>
+      )}
+    </div>
+  )
 
   return (
     <header className="sticky top-0 z-50 flex justify-center px-4 pt-5">

@@ -37,24 +37,25 @@ export default async function DashboardPage() {
   const name = profile?.full_name || user.user_metadata?.full_name || user.email?.split('@')[0]
   const email = profile?.email || user.email
   const role = userRole?.role || 'free'
-  const hasService = userRole?.has_service || false
+  const serviceCount = userRole?.service_count || 0
   const initials = name.split(' ').map((p: string) => p[0]).join('').slice(0, 2).toUpperCase()
 
   const roleBadge = () => (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 flex-wrap">
       {role === 'premium' && (
         <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium"
           style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.14)', color: 'rgba(255,255,255,0.8)' }}>
           <Crown className="size-3" /> Premium
         </div>
       )}
-      {hasService && (
+      {serviceCount > 0 && (
         <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium"
           style={{ background: 'rgba(88,101,242,0.12)', border: '1px solid rgba(88,101,242,0.25)', color: 'rgba(180,185,255,0.9)' }}>
-          <Wrench className="size-3" /> Service
+          <Wrench className="size-3" />
+          {serviceCount > 1 ? `Service x${serviceCount}` : 'Service'}
         </div>
       )}
-      {role === 'free' && !hasService && (
+      {role === 'free' && serviceCount === 0 && (
         <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium"
           style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.38)' }}>
           Free
@@ -137,7 +138,7 @@ export default async function DashboardPage() {
                 </div>
                 <h2 className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.85)' }}>Download</h2>
               </div>
-              {role === 'free' && !hasService ? (
+              {role === 'free' && serviceCount === 0 ? (
                 <div className="text-center">
                   <p className="text-sm" style={{ color: 'rgba(255,255,255,0.38)', fontWeight: 300 }}>
                     Purchase a license to download Syntra Optimizer
@@ -160,16 +161,6 @@ export default async function DashboardPage() {
                   </a>
                   <p className="mt-2 text-center text-xs" style={{ color: 'rgba(255,255,255,0.25)' }}>
                     v1.0.0 — Windows 10/11 · 100 MB
-                  </p>
-                </>
-              )}
-                  <a href="/api/download"
-                    className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-full text-sm font-semibold transition-all duration-200 hover:-translate-y-px"
-                    style={{ background: 'rgba(255,255,255,0.92)', color: '#080808', boxShadow: '0 0 24px -6px rgba(255,255,255,0.4)' }}>
-                    <Download className="size-4" /> Download v1.3.0
-                  </a>
-                  <p className="mt-2 text-center text-xs" style={{ color: 'rgba(255,255,255,0.25)' }}>
-                    v1.3.0 — Windows 10/11 · 4.8 MB
                   </p>
                 </>
               )}

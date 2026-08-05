@@ -44,12 +44,20 @@ export async function POST(req: Request) {
 
         if (userId) {
           if (plan === 'service') {
-            // Service is additive — just flag has_service, never touch existing role
+            // Increment service count
+            const { data: existing } = await supabase
+              .from('user_roles')
+              .select('service_count')
+              .eq('user_id', userId)
+              .maybeSingle()
+
+            const currentCount = existing?.service_count || 0
+
             const { error } = await supabase
               .from('user_roles')
               .upsert({
                 user_id: userId,
-                has_service: true,
+                service_count: currentCount + 1,
                 stripe_customer_id: customerId,
                 updated_at: new Date().toISOString(),
               }, { onConflict: 'user_id' })
