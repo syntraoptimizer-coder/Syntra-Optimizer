@@ -137,15 +137,15 @@ export default async function DashboardPage() {
                 </div>
                 <h2 className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.85)' }}>Download</h2>
               </div>
-              {role === 'free' ? (
+              {role === 'free' && !hasService ? (
                 <div className="text-center">
                   <p className="text-sm" style={{ color: 'rgba(255,255,255,0.38)', fontWeight: 300 }}>
-                    Upgrade to Premium to download Syntra Optimizer
+                    Purchase a license to download Syntra Optimizer
                   </p>
                   <Link href="/checkout?plan=premium"
                     className="mt-4 inline-flex h-10 w-full items-center justify-center gap-2 rounded-full text-sm font-semibold transition-all duration-200 hover:-translate-y-px"
                     style={{ background: 'rgba(255,255,255,0.92)', color: '#080808', boxShadow: '0 0 24px -6px rgba(255,255,255,0.4)' }}>
-                    <Crown className="size-4" /> Upgrade to Premium
+                    <Crown className="size-4" /> Get Premium
                   </Link>
                 </div>
               ) : (
@@ -153,6 +153,16 @@ export default async function DashboardPage() {
                   <p className="text-sm mb-4" style={{ color: 'rgba(255,255,255,0.38)', fontWeight: 300 }}>
                     Get the latest Syntra Optimizer for Windows 10/11.
                   </p>
+                  <a href="/api/download"
+                    className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-full text-sm font-semibold transition-all duration-200 hover:-translate-y-px"
+                    style={{ background: 'rgba(255,255,255,0.92)', color: '#080808', boxShadow: '0 0 24px -6px rgba(255,255,255,0.4)' }}>
+                    <Download className="size-4" /> Download v1.0.0
+                  </a>
+                  <p className="mt-2 text-center text-xs" style={{ color: 'rgba(255,255,255,0.25)' }}>
+                    v1.0.0 — Windows 10/11 · 100 MB
+                  </p>
+                </>
+              )}
                   <a href="/api/download"
                     className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-full text-sm font-semibold transition-all duration-200 hover:-translate-y-px"
                     style={{ background: 'rgba(255,255,255,0.92)', color: '#080808', boxShadow: '0 0 24px -6px rgba(255,255,255,0.4)' }}>

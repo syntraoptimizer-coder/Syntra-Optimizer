@@ -48,13 +48,14 @@ export async function GET(_req: NextRequest) {
 
     const { data: roleData } = await supabase
       .from('user_roles')
-      .select('role')
+      .select('role, has_service')
       .eq('user_id', user.id)
       .maybeSingle()
 
     const role = roleData?.role || 'free'
+    const hasService = roleData?.has_service || false
 
-    if (role !== 'premium' && role !== 'service') {
+    if (role !== 'premium' && !hasService) {
       return NextResponse.json({ error: 'Premium required' }, { status: 403 })
     }
 
