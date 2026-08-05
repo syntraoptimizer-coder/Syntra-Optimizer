@@ -30,7 +30,7 @@ export default async function DashboardPage() {
     .eq('id', user.id).maybeSingle()
 
   const { data: userRole } = await supabase
-    .from('user_roles').select('role, has_service').eq('user_id', user.id).maybeSingle()
+    .from('user_roles').select('role, service_count').eq('user_id', user.id).maybeSingle()
 
   const { data: updates } = await supabase
     .from('updates').select('id, version, title, body, category, published_at')
