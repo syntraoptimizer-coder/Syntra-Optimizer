@@ -62,7 +62,8 @@ function Cell({ ok }: { ok: boolean }) {
 }
 
 export function Pricing() {
-  const [userRole, setUserRole] = useState<'free' | 'premium' | 'service'>('free')
+  const [userRole, setUserRole] = useState<'free' | 'premium'>('free')
+  const [serviceCount, setServiceCount] = useState(0)
   const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
@@ -72,17 +73,18 @@ export function Pricing() {
       if (session?.user) {
         const { data } = await supabase
           .from('user_roles')
-          .select('role')
+          .select('role, service_count')
           .eq('user_id', session.user.id)
           .maybeSingle()
         setUserRole(data?.role || 'free')
+        setServiceCount(data?.service_count || 0)
       }
       setLoaded(true)
     }
     fetchRole()
   }, [])
 
-  const hasPremium = userRole === 'premium' || userRole === 'service'
+  const hasPremium = userRole === 'premium'
 
   return (
     <section id="pricing" className="scroll-mt-16">

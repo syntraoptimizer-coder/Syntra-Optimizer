@@ -33,13 +33,15 @@ export function ReturnContent({ user, plan }: ReturnContentProps) {
       attempts++
       const { data } = await supabase
         .from('user_roles')
-        .select('role')
+        .select('role, service_count')
         .eq('user_id', user.id)
         .maybeSingle()
 
-      const expectedRole = plan === 'service' ? 'service' : 'premium'
+      const isPremium = data?.role === 'premium'
+      const hasService = (data?.service_count || 0) > 0
+      const isConfirmed = plan === 'service' ? hasService : isPremium
 
-      if (data?.role === expectedRole) {
+      if (isConfirmed) {
         setHasAccess(true)
         setIsVerifying(false)
         return
