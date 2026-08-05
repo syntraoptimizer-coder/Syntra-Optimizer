@@ -108,7 +108,7 @@ export function Pricing() {
                 }
               >
                 {plan.featured && (
-                  <div className="mb-3 flex justify-end">
+                  <div className="mb-3 flex justify-start">
                     <span
                       className="rounded-md px-2 py-0.5 text-xs font-semibold"
                       style={{
