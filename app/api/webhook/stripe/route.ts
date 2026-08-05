@@ -43,13 +43,28 @@ export async function POST(req: Request) {
         const plan = session.metadata?.plan
 
         if (userId) {
-          const role = plan === 'service' ? 'service' : 'premium'
+          // Check existing role to never downgrade
+          const { data: existing } = await supabase
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', userId)
+            .maybeSingle()
+
+          const existingRole = existing?.role || 'free'
+          const newRole = plan === 'service' ? 'service' : 'premium'
+
+          // Role priority: premium > service > free
+          // Never downgrade — if already premium, keep premium even when buying service
+          const PRIORITY: Record<string, number> = { free: 0, service: 1, premium: 2 }
+          const finalRole = (PRIORITY[newRole] ?? 0) >= (PRIORITY[existingRole] ?? 0)
+            ? newRole
+            : existingRole
 
           const { error } = await supabase
             .from('user_roles')
             .upsert({
               user_id: userId,
-              role,
+              role: finalRole,
               stripe_customer_id: customerId,
               updated_at: new Date().toISOString(),
             }, { onConflict: 'user_id' })
