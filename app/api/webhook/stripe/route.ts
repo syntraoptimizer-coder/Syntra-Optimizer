@@ -43,35 +43,36 @@ export async function POST(req: Request) {
         const plan = session.metadata?.plan
 
         if (userId) {
-          // Check existing role to never downgrade
-          const { data: existing } = await supabase
-            .from('user_roles')
-            .select('role')
-            .eq('user_id', userId)
-            .maybeSingle()
+          if (plan === 'service') {
+            // Service is additive — just flag has_service, never touch existing role
+            const { error } = await supabase
+              .from('user_roles')
+              .upsert({
+                user_id: userId,
+                has_service: true,
+                stripe_customer_id: customerId,
+                updated_at: new Date().toISOString(),
+              }, { onConflict: 'user_id' })
 
-          const existingRole = existing?.role || 'free'
-          const newRole = plan === 'service' ? 'service' : 'premium'
+            if (error) {
+              console.error('Supabase service update error:', error)
+              return NextResponse.json({ error: 'DB update failed' }, { status: 500 })
+            }
+          } else {
+            // Premium purchase — set role to premium
+            const { error } = await supabase
+              .from('user_roles')
+              .upsert({
+                user_id: userId,
+                role: 'premium',
+                stripe_customer_id: customerId,
+                updated_at: new Date().toISOString(),
+              }, { onConflict: 'user_id' })
 
-          // Role priority: premium > service > free
-          // Never downgrade — if already premium, keep premium even when buying service
-          const PRIORITY: Record<string, number> = { free: 0, service: 1, premium: 2 }
-          const finalRole = (PRIORITY[newRole] ?? 0) >= (PRIORITY[existingRole] ?? 0)
-            ? newRole
-            : existingRole
-
-          const { error } = await supabase
-            .from('user_roles')
-            .upsert({
-              user_id: userId,
-              role: finalRole,
-              stripe_customer_id: customerId,
-              updated_at: new Date().toISOString(),
-            }, { onConflict: 'user_id' })
-
-          if (error) {
-            console.error('Supabase update error:', error)
-            return NextResponse.json({ error: 'DB update failed' }, { status: 500 })
+            if (error) {
+              console.error('Supabase premium update error:', error)
+              return NextResponse.json({ error: 'DB update failed' }, { status: 500 })
+            }
           }
         }
         break

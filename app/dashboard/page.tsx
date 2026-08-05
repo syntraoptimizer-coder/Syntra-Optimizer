@@ -28,7 +28,7 @@ export default async function DashboardPage() {
     .eq('id', user.id).maybeSingle()
 
   const { data: userRole } = await supabase
-    .from('user_roles').select('role').eq('user_id', user.id).maybeSingle()
+    .from('user_roles').select('role, has_service').eq('user_id', user.id).maybeSingle()
 
   const { data: updates } = await supabase
     .from('updates').select('id, version, title, body, category, published_at')
@@ -37,28 +37,31 @@ export default async function DashboardPage() {
   const name = profile?.full_name || user.user_metadata?.full_name || user.email?.split('@')[0]
   const email = profile?.email || user.email
   const role = userRole?.role || 'free'
+  const hasService = userRole?.has_service || false
   const initials = name.split(' ').map((p: string) => p[0]).join('').slice(0, 2).toUpperCase()
 
-  const roleBadge = () => {
-    if (role === 'premium') return (
-      <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium"
-        style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.14)', color: 'rgba(255,255,255,0.8)' }}>
-        <Crown className="size-3" /> Premium
-      </div>
-    )
-    if (role === 'service') return (
-      <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium"
-        style={{ background: 'rgba(88,101,242,0.12)', border: '1px solid rgba(88,101,242,0.25)', color: 'rgba(180,185,255,0.9)' }}>
-        <Wrench className="size-3" /> Service
-      </div>
-    )
-    return (
-      <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium"
-        style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.38)' }}>
-        Free
-      </div>
-    )
-  }
+  const roleBadge = () => (
+    <div className="flex items-center gap-2">
+      {role === 'premium' && (
+        <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium"
+          style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.14)', color: 'rgba(255,255,255,0.8)' }}>
+          <Crown className="size-3" /> Premium
+        </div>
+      )}
+      {hasService && (
+        <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium"
+          style={{ background: 'rgba(88,101,242,0.12)', border: '1px solid rgba(88,101,242,0.25)', color: 'rgba(180,185,255,0.9)' }}>
+          <Wrench className="size-3" /> Service
+        </div>
+      )}
+      {role === 'free' && !hasService && (
+        <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium"
+          style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.38)' }}>
+          Free
+        </div>
+      )}
+    </div>
+  )
 
   return (
     <div className="min-h-dvh" style={{ background: '#080808' }}>
