@@ -150,7 +150,7 @@ export default async function DashboardPage() {
                   <p className="text-sm mb-4" style={{ color: 'rgba(255,255,255,0.38)', fontWeight: 300 }}>
                     Get the latest Syntra Optimizer for Windows 10/11.
                   </p>
-                  <a href="/downloads/syntra-optimizer-setup.exe"
+                  <a href="/api/download"
                     className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-full text-sm font-semibold transition-all duration-200 hover:-translate-y-px"
                     style={{ background: 'rgba(255,255,255,0.92)', color: '#080808', boxShadow: '0 0 24px -6px rgba(255,255,255,0.4)' }}>
                     <Download className="size-4" /> Download v1.3.0

@@ -112,7 +112,7 @@ export function Features() {
 
         {/* Bottom highlights row */}
         <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-          {['Faster PC', 'Higher FPS', 'Lower Ping', 'Better Stability', 'Cleaner Windows', 'Pro Performance'].map((item) => (
+          {['Faster PC', 'Higher FPS', 'Lower Ping', 'Lower Latency', 'Better Stability', 'Cleaner Windows', 'Pro Performance'].map((item) => (
             <div
               key={item}
               className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-medium"
