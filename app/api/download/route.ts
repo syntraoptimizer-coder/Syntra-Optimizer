@@ -28,8 +28,8 @@ async function getB2Token() {
   }
 
   const data = await res.json()
-  const apiUrl = data.apiInfo?.storageApi?.apiUrl ?? data.apiUrl
-  const downloadUrl = data.downloadUrl
+  const apiUrl = data.apiInfo?.storageApi?.apiUrl
+  const downloadUrl = data.apiInfo?.storageApi?.downloadUrl
 
   if (!apiUrl || !downloadUrl) throw new Error(`B2 missing fields: ${JSON.stringify(data)}`)
 
