@@ -2,7 +2,7 @@ import { Navbar } from '@/components/site/navbar'
 import { Hero } from '@/components/site/hero'
 import { StatsBar } from '@/components/site/stats-bar'
 import { Features } from '@/components/site/features'
-import { ScoreComparison } from '@/components/site/score-comparison'
+import { AppShowcase } from '@/components/site/app-showcase'
 import { Benchmarks } from '@/components/site/benchmarks'
 import { Testimonials } from '@/components/site/testimonials'
 import { Pricing } from '@/components/site/pricing'
@@ -53,7 +53,7 @@ export default function HomePage() {
         <Hero />
         <StatsBar />
         <Features />
-        <ScoreComparison />
+        <AppShowcase />
         <Benchmarks />
         <Testimonials />
         <Pricing />
