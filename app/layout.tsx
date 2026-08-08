@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     template: '%s | Syntra Optimizer',
   },
   description:
-    'Boost your Windows 10/11 PC with one click. Auto fixes, debloating, network tuning & game optimizer. Higher FPS, faster boots, cleaner system.',
+    'Boost your Windows 10/11 with one click. Auto fixes, debloating, network tuning & game optimizer. Higher FPS, faster boots, cleaner system.',
   keywords: [
     'PC optimizer',
     'Windows optimizer',
