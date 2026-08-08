@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { Download, Gauge, PackageCheck, User, Crown, Wrench } from 'lucide-react'
+import { Download, PackageCheck, User, Crown, Wrench } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { Logo } from '@/components/site/logo'
 import { SignOutButton } from '@/components/dashboard/sign-out'
@@ -166,33 +166,6 @@ export default async function DashboardPage() {
                   </p>
                 </>
               )}
-            </section>
-
-            {/* System score */}
-            <section className="rounded-2xl p-5"
-              style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
-              <div className="flex items-center gap-2 mb-4">
-                <div className="grid size-8 place-items-center rounded-lg"
-                  style={{ background: 'rgba(255,255,255,0.07)', color: 'rgba(255,255,255,0.7)' }}>
-                  <Gauge className="size-4" />
-                </div>
-                <h2 className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.85)' }}>System score</h2>
-              </div>
-              <div className="flex items-center gap-4">
-                <div className="relative grid size-16 place-items-center rounded-full"
-                  style={{ border: '3px solid rgba(255,255,255,0.15)', boxShadow: '0 0 24px -8px rgba(255,255,255,0.3)' }}>
-                  <span className="text-xl font-light" style={{ color: '#ffffff' }}>92</span>
-                </div>
-                <div className="text-sm">
-                  <p style={{ color: 'rgba(255,255,255,0.85)' }}>
-                    <span className="font-medium">+24 pts</span>{' '}
-                    <span style={{ color: 'rgba(255,255,255,0.4)', fontWeight: 300 }}>since last scan</span>
-                  </p>
-                  <p className="mt-1 text-xs" style={{ color: 'rgba(255,255,255,0.35)', fontWeight: 300 }}>
-                    Better than 87% of users
-                  </p>
-                </div>
-              </div>
             </section>
 
             {/* Profile */}
