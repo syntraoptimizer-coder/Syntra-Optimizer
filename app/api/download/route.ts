@@ -74,10 +74,15 @@ export async function GET(_req: NextRequest) {
 
     if (!fileRes.ok) throw new Error(`B2 fetch failed: ${fileRes.status}`)
 
+    // Use the original filename from B2 headers
+    const b2ContentDisposition = fileRes.headers.get('Content-Disposition')
+    const b2FileName = filePath.split('/').pop() || 'SyntraOptimizer-Setup.exe'
+    const contentDisposition = b2ContentDisposition || `attachment; filename="${b2FileName}"`
+
     return new Response(fileRes.body, {
       headers: {
         'Content-Type': 'application/octet-stream',
-        'Content-Disposition': 'attachment; filename="Syntra Optimizer Setup 1.1.0.exe"',
+        'Content-Disposition': contentDisposition,
         'Content-Length': fileRes.headers.get('Content-Length') || '',
       },
     })
