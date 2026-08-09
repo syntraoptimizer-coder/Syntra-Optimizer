@@ -159,10 +159,10 @@ export default async function DashboardPage() {
                   <a href="/api/download"
                     className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-full text-sm font-semibold transition-all duration-200 hover:-translate-y-px"
                     style={{ background: 'rgba(255,255,255,0.92)', color: '#080808', boxShadow: '0 0 24px -6px rgba(255,255,255,0.4)' }}>
-                    <Download className="size-4" /> Download v1.1.0
+                    <Download className="size-4" /> Download v1.1.1
                   </a>
                   <p className="mt-2 text-center text-xs" style={{ color: 'rgba(255,255,255,0.25)' }}>
-                    v1.1.0 — Windows 10/11 · 102 MB
+                    v1.1.1 — Windows 10/11 · 105 MB
                   </p>
                 </>
               )}
