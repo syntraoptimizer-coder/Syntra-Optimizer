@@ -9,8 +9,7 @@ let b2Cache: {
 } | null = null
 
 async function getB2Token() {
-  if (b2Cache && Date.now() < b2Cache.expiresAt) return b2Cache
-
+  // Always re-authenticate — no cache to avoid stale token issues
   const keyId = process.env.B2_KEY_ID
   const appKey = process.env.B2_APPLICATION_KEY
   if (!keyId || !appKey) throw new Error('B2 credentials missing')
