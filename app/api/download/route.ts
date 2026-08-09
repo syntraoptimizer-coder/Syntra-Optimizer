@@ -77,7 +77,7 @@ export async function GET(_req: NextRequest) {
     return new Response(fileRes.body, {
       headers: {
         'Content-Type': 'application/octet-stream',
-        'Content-Disposition': 'attachment; filename="SyntraOptimizer-Setup.exe"',
+        'Content-Disposition': 'attachment; filename="Syntra Optimizer Setup 1.1.0.exe"',
         'Content-Length': fileRes.headers.get('Content-Length') || '',
       },
     })
