@@ -1,15 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
-let b2Cache: {
-  authorizationToken: string
-  apiUrl: string
-  downloadUrl: string
-  expiresAt: number
-} | null = null
-
 async function getB2Token() {
-  // Always re-authenticate — no cache to avoid stale token issues
   const keyId = process.env.B2_KEY_ID
   const appKey = process.env.B2_APPLICATION_KEY
   if (!keyId || !appKey) throw new Error('B2 credentials missing')
@@ -19,21 +11,17 @@ async function getB2Token() {
     headers: { Authorization: `Basic ${credentials}` },
   })
 
-  if (!res.ok) throw new Error('B2 auth failed')
+  if (!res.ok) throw new Error(`B2 auth failed: ${res.status}`)
 
   const data = await res.json()
   const apiUrl = data.apiInfo?.storageApi?.apiUrl
-  const downloadUrl = data.apiInfo?.storageApi?.downloadUrl
-  if (!apiUrl || !downloadUrl) throw new Error('B2 missing fields')
+  const authorizationToken = data.authorizationToken
 
-  b2Cache = {
-    authorizationToken: data.authorizationToken,
-    apiUrl,
-    downloadUrl,
-    expiresAt: Date.now() + 23 * 60 * 60 * 1000,
+  if (!apiUrl || !authorizationToken) {
+    throw new Error('B2 missing fields')
   }
 
-  return b2Cache
+  return { authorizationToken, apiUrl }
 }
 
 export async function GET(_req: NextRequest) {
@@ -58,36 +46,39 @@ export async function GET(_req: NextRequest) {
       return NextResponse.json({ error: 'Premium required' }, { status: 403 })
     }
 
-    const { authorizationToken, downloadUrl } = await getB2Token()
+    const { authorizationToken, apiUrl } = await getB2Token()
 
-    const bucketName = process.env.B2_BUCKET_NAME
-    const filePath = process.env.B2_FILE_PATH || 'Syntra Optimizer Setup 1.0.0.exe'
+    const fileId = process.env.B2_FILE_ID
+    const filePath = process.env.B2_FILE_PATH || 'Syntra Optimizer Setup 1.1.1.exe'
 
-    if (!bucketName) throw new Error('B2 bucket config missing')
+    if (!fileId) throw new Error('B2_FILE_ID missing')
 
-    const encodedPath = filePath.split('/').map(encodeURIComponent).join('/')
+    // Use b2_download_file_by_id via apiUrl — works with restricted keys
     const fileRes = await fetch(
-      `${downloadUrl}/file/${bucketName}/${encodedPath}`,
+      `${apiUrl}/b2api/v3/b2_download_file_by_id?fileId=${fileId}`,
       { headers: { Authorization: authorizationToken } }
     )
 
-    if (!fileRes.ok) throw new Error(`B2 fetch failed: ${fileRes.status}`)
+    if (!fileRes.ok) {
+      const txt = await fileRes.text()
+      throw new Error(`B2 file fetch failed: ${fileRes.status} ${txt}`)
+    }
 
-    // Use the original filename from B2 headers
-    const b2ContentDisposition = fileRes.headers.get('Content-Disposition')
-    const b2FileName = filePath.split('/').pop() || 'SyntraOptimizer-Setup.exe'
-    const contentDisposition = b2ContentDisposition || `attachment; filename="${b2FileName}"`
+    const fileName = filePath.split('/').pop() || 'SyntraOptimizer-Setup.exe'
 
     return new Response(fileRes.body, {
       headers: {
         'Content-Type': 'application/octet-stream',
-        'Content-Disposition': contentDisposition,
+        'Content-Disposition': `attachment; filename="${fileName}"`,
         'Content-Length': fileRes.headers.get('Content-Length') || '',
       },
     })
 
   } catch (err) {
     console.error('[download]', err)
-    return NextResponse.json({ error: 'Download unavailable', detail: err instanceof Error ? err.message : String(err) }, { status: 500 })
+    return NextResponse.json({
+      error: 'Download unavailable',
+      detail: err instanceof Error ? err.message : String(err)
+    }, { status: 500 })
   }
 }
