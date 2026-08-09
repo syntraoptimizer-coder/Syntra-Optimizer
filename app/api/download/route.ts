@@ -89,6 +89,6 @@ export async function GET(_req: NextRequest) {
 
   } catch (err) {
     console.error('[download]', err)
-    return NextResponse.json({ error: 'Download unavailable' }, { status: 500 })
+    return NextResponse.json({ error: 'Download unavailable', detail: err instanceof Error ? err.message : String(err) }, { status: 500 })
   }
 }
